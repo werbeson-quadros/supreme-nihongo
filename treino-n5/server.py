@@ -135,7 +135,7 @@ def ensure_engine():
             pass
         exe = ROOT.parent / "voicevox" / "engine" / "windows-nvidia" / "run.exe"
         if not exe.exists():
-            raise RuntimeError("VOICEVOX não encontrado. Consulte voicevox/LEIA-ME.md.")
+            raise RuntimeError("VOICEVOX não encontrado. Consulte voicevox/README.md.")
         flags = getattr(subprocess, "CREATE_NO_WINDOW", 0)
         ENGINE_PROCESS = subprocess.Popen([str(exe), "--host", "127.0.0.1", "--port", "50021", "--use_gpu"], cwd=str(exe.parent), creationflags=flags, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         for _ in range(60):
