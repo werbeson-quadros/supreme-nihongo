@@ -4,13 +4,14 @@ A local Japanese N5/N4 practice app for listening, sentence completion, and voca
 
 ## Run locally
 
-This project targets Windows with Python 3.8 or newer and a locally installed VOICEVOX Engine. Place the CUDA engine executable at `voicevox/engine/windows-nvidia/run.exe`, then run:
+This project targets Windows with Python 3.8 or newer. Install the official VOICEVOX Engine and start the trainer:
 
 ```powershell
+.\voicevox\install.ps1
 .\treino-n5\iniciar.ps1
 ```
 
-Open <http://127.0.0.1:8765/> if the browser does not open automatically. The app starts the VOICEVOX Engine when audio is first requested.
+The installer automatically selects CUDA when it detects an NVIDIA GPU, or the CPU package otherwise. It downloads the pinned VOICEVOX Engine 0.26.0 release, verifies official SHA-256 hashes, extracts it, and starts the engine. It needs about 11 GB of free disk space for CUDA or 7 GB for CPU during installation, and skips the download when the selected edition is already present. Open <http://127.0.0.1:8765/> if the browser does not open automatically.
 
 ## Features
 

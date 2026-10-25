@@ -133,11 +133,25 @@ def ensure_engine():
             return
         except Exception:
             pass
-        exe = ROOT.parent / "voicevox" / "engine" / "windows-nvidia" / "run.exe"
-        if not exe.exists():
-            raise RuntimeError("VOICEVOX não encontrado. Consulte voicevox/README.md.")
+        gpu_exe = ROOT.parent / "voicevox" / "engine" / "windows-nvidia" / "run.exe"
+        cpu_exe = ROOT.parent / "voicevox" / "engine" / "windows-cpu" / "run.exe"
+        gpu_available = False
+        try:
+            result = subprocess.run(["nvidia-smi", "-L"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=5)
+            gpu_available = result.returncode == 0
+        except (OSError, subprocess.TimeoutExpired):
+            pass
+        if gpu_available and gpu_exe.exists():
+            exe, use_gpu = gpu_exe, True
+        elif cpu_exe.exists():
+            exe, use_gpu = cpu_exe, False
+        else:
+            raise RuntimeError("VOICEVOX não encontrado. Execute voicevox/install.ps1.")
         flags = getattr(subprocess, "CREATE_NO_WINDOW", 0)
-        ENGINE_PROCESS = subprocess.Popen([str(exe), "--host", "127.0.0.1", "--port", "50021", "--use_gpu"], cwd=str(exe.parent), creationflags=flags, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        args = [str(exe), "--host", "127.0.0.1", "--port", "50021"]
+        if use_gpu:
+            args.append("--use_gpu")
+        ENGINE_PROCESS = subprocess.Popen(args, cwd=str(exe.parent), creationflags=flags, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         for _ in range(60):
             if ENGINE_PROCESS.poll() is not None:
                 raise RuntimeError("O motor de áudio terminou durante a inicialização.")

@@ -6,10 +6,25 @@ try {
     exit 0
 } catch {}
 
-$engine = Join-Path $PSScriptRoot 'engine\windows-nvidia\run.exe'
-if (-not (Test-Path $engine)) { throw "Motor nao encontrado: $engine" }
+$cudaEngine = Join-Path $PSScriptRoot 'engine\windows-nvidia\run.exe'
+$cpuEngine = Join-Path $PSScriptRoot 'engine\windows-cpu\run.exe'
+$gpuTool = Get-Command nvidia-smi.exe -ErrorAction SilentlyContinue
+$gpuAvailable = $false
+if ($gpuTool) {
+    & $gpuTool.Source -L *> $null
+    $gpuAvailable = $LASTEXITCODE -eq 0
+}
+if ($gpuAvailable -and (Test-Path -LiteralPath $cudaEngine -PathType Leaf)) {
+    $engine = $cudaEngine
+    $arguments = @('--host','127.0.0.1','--port','50021','--use_gpu')
+} elseif (Test-Path -LiteralPath $cpuEngine -PathType Leaf) {
+    $engine = $cpuEngine
+    $arguments = @('--host','127.0.0.1','--port','50021')
+} else {
+    throw 'VOICEVOX Engine was not found. Run voicevox/install.ps1 first.'
+}
 $process = Start-Process -FilePath $engine `
-    -ArgumentList '--host','127.0.0.1','--port','50021','--use_gpu' `
+    -ArgumentList $arguments `
     -WorkingDirectory (Split-Path $engine) `
     -WindowStyle Hidden -PassThru
 for ($i = 0; $i -lt 60; $i++) {
