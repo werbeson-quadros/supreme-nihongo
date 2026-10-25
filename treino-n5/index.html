@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Prática N5 · Supreme Nihongo</title>
+  <script>document.documentElement.dataset.theme = localStorage.getItem('n5Theme') === 'dark' ? 'dark' : 'light';</script>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <main>
+      <header class="topbar"><div class="top-brand"><span class="brand-mark">日</span><strong>SUPREME <span>NIHONGO</span></strong></div><span class="top-context">PRÁTICA DE JAPONÊS <i>/</i> <span id="topMode">LISTENING</span></span><div class="top-actions"><button id="themeToggle" class="theme-toggle" type="button" aria-pressed="false">☾ <span>Tema escuro</span></button><span class="status"><span class="dot"></span> VOICEVOX LOCAL</span></div></header>
+      <section class="hero">
+        <div id="heroEyebrow" class="eyebrow">聴解 · COMPREENSÃO AUDITIVA</div>
+        <h1 id="heroTitle">Treine o ouvido.<br><em>Palavra por palavra.</em></h1>
+        <p id="heroDescription">Uma frase N5 por vez. Ouça quantas vezes precisar e escreva exatamente o que entendeu.</p>
+      </section>
+      <div class="training-controls"><div class="mode-tabs" role="tablist" aria-label="Modo de treino"><button class="mode-tab active" data-mode="Listening" role="tab" aria-selected="true">♫ &nbsp; Escuta</button><button class="mode-tab" data-mode="Writing" role="tab" aria-selected="false">✎ &nbsp; Complete a frase</button></div><label class="level-control" for="levelSelect">Nível <select id="levelSelect" aria-label="Nível das frases"><option value="N5">N5</option><option value="N4">N4</option></select></label></div>
+      <div class="content-grid">
+        <section class="exercise card">
+          <div class="card-top"><span id="levelPill" class="pill">NÍVEL N5</span><span id="category" class="category">Preparando frase…</span></div>
+          <div class="exercise-heading"><span class="exercise-number">01 <small id="phraseCountMain">/ …</small></span><span class="separator"></span><span id="exerciseTitle">Ouça a frase</span></div>
+          <div class="voice-control"><label for="voiceSelect">Voz de reprodução</label><select id="voiceSelect" aria-label="Voz de reprodução"><option value="2">Carregando vozes…</option></select></div>
+          <div id="playerPrompt" class="player-prompt" hidden>Ouça a frase em japonês</div>
+          <div class="player" id="playerBlock">
+            <button id="play" class="play-button" type="button" aria-label="Reproduzir áudio" title="Reproduzir áudio"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
+            <div class="player-body"><div class="wave" aria-hidden="true" id="wave"></div><div class="player-caption"><span id="audioStatus">Carregando áudio…</span><span id="replays">0 reproduções</span></div><div class="speed-control"><label for="playbackRate">Velocidade</label><select id="playbackRate" aria-label="Velocidade de reprodução"><option value="0.5">0,5×</option><option value="0.75">0,75×</option><option value="1" selected>1× normal</option><option value="1.25">1,25×</option><option value="1.5">1,5×</option><option value="2">2×</option></select></div><label class="particle-pause"><input id="particlePause" type="checkbox"><span>Pausar 0,5 s após cada partícula</span></label></div>
+          </div>
+          <audio id="audio" preload="auto"></audio>
+          <div id="writingPanel" class="writing-panel" hidden><div class="objective-label">OBJETIVO EM PORTUGUÊS</div><div id="objective" class="objective"></div><p>Complete de 2 a 4 lacunas. Os trechos já visíveis não precisam ser alterados.</p></div>
+          <form id="answerForm">
+            <label for="answer">O que você ouviu?</label>
+            <span class="hint">Escreva em japonês. Kanji ou a leitura em kana são aceitos; pontuação e espaços são ignorados.</span>
+            <textarea id="answer" rows="3" placeholder="ここに聞こえた文を書いてください…" lang="ja" spellcheck="false" required></textarea>
+            <div class="form-bottom"><span>Ctrl + Enter para conferir</span><button class="submit" type="submit">Conferir resposta <span>→</span></button></div>
+          </form>
+          <form id="clozeForm" hidden><div class="cloze-label">Complete a frase em japonês</div><div id="clozeParts" class="cloze-parts" lang="ja"></div><div class="form-bottom"><span>Kanji ou kana aceitos em cada lacuna</span><button class="submit" type="submit">Conferir lacunas <span>→</span></button></div></form>
+        </section>
+        <aside class="review-rail card" aria-label="Ranking de revisão">
+          <div class="rail-eyebrow">RANKING DE REVISÃO <span id="rankingMode">ESCUTA</span></div>
+          <h2>Palavras para rever</h2>
+          <p id="progressCopy" class="progress-copy">Ordenadas pelos erros de escuta.</p>
+          <div id="weakWords" class="weak-words"><div class="empty">Seu mapa de escuta começa com a primeira resposta.</div></div>
+          <div class="rail-summary"><span><b id="attempts">0</b> frases</span><span><b id="accuracy">—</b> <span id="accuracyLabel">precisão de escuta</span></span></div>
+          <div class="mode-scores"><div><span>Escuta</span><b id="listeningScore">—</b></div><div><span>Escrita</span><b id="writingScore">—</b></div></div>
+        </aside>
+      </div>
+      <footer>Áudio japonês gerado localmente com VOICEVOX · Resultados salvos neste computador</footer>
+    </main>
+  </div>
+  <dialog id="resultDialog" aria-labelledby="resultTitle">
+    <div class="dialog-inner">
+      <button id="closeDialog" class="close" aria-label="Fechar">×</button>
+      <div id="resultBadge" class="result-badge"></div><h2 id="resultTitle"></h2><p id="scoreLine"></p>
+      <div class="result-phrase"><span>FRASE ORIGINAL</span><strong id="correctText" lang="ja"></strong><p id="translation"></p></div>
+      <div class="result-audio" aria-label="Áudio da frase em japonês">
+        <button id="dialogPlay" class="dialog-play" type="button" aria-label="Reproduzir frase em japonês">▶</button>
+        <div class="result-audio-copy"><strong>Ouvir em japonês</strong><small id="dialogAudioStatus">Pronto para ouvir</small></div>
+        <label for="dialogPlaybackRate">Velocidade</label><select id="dialogPlaybackRate" aria-label="Velocidade no resultado"><option value="0.5">0,5×</option><option value="0.75">0,75×</option><option value="1">1×</option><option value="1.25">1,25×</option><option value="1.5">1,5×</option><option value="2">2×</option></select>
+      </div>
+      <div id="grammarNote" class="grammar-note" hidden></div><h3 id="analysisTitle">Análise por trecho</h3><div id="tokenResults" class="token-results"></div>
+      <div class="dialog-actions"><button id="nextPhrase" class="submit">Próxima frase <span>→</span></button></div>
+    </div>
+    <div id="dialogSelectionTooltip" class="selection-tooltip" role="tooltip" hidden></div>
+  </dialog>
+  <div id="selectionTooltip" class="selection-tooltip" role="tooltip" hidden></div>
+  <script src="/app.js"></script>
+</body>
+</html>

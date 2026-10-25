@@ -1,0 +1,446 @@
+"""Local N5/N4 trainer: static UI, VOICEVOX audio, and SQLite history."""
+import json
+import io
+import hashlib
+import random
+import re
+import sqlite3
+import subprocess
+import sys
+import threading
+import time
+import unicodedata
+import urllib.parse
+import urllib.request
+import uuid
+import wave
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent
+DATA = [json.loads((ROOT / f"Lista e Frases {level}.json").read_text(encoding="utf-8")) for level in ("N5", "N4")]
+PHRASES = {p["id"]: p for corpus in DATA for p in corpus["phrases"]}
+LEVEL_PHRASES = {level: [p for p in PHRASES.values() if p["level"] == level] for level in ("N5", "N4")}
+DB = ROOT / "desempenho.sqlite3"
+AUDIO_DIR = ROOT / "audio-cache"
+VOICEVOX = "http://127.0.0.1:50021"
+LOCK = threading.Lock()
+SESSION_LOCK = threading.Lock()
+SESSIONS = {}
+ENGINE_PROCESS = None
+
+
+def database():
+    con = sqlite3.connect(DB, timeout=20)
+    con.execute("PRAGMA journal_mode=WAL")
+    con.executescript("""
+    CREATE TABLE IF NOT EXISTS attempts (
+      id INTEGER PRIMARY KEY, phrase_id INTEGER NOT NULL, submitted TEXT NOT NULL,
+      correct INTEGER NOT NULL, total INTEGER NOT NULL, created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      detail_json TEXT NOT NULL
+    );
+    CREATE TABLE IF NOT EXISTS token_results (
+      id INTEGER PRIMARY KEY, attempt_id INTEGER NOT NULL, token_key TEXT NOT NULL,
+      surface TEXT NOT NULL, reading TEXT NOT NULL, kind TEXT NOT NULL,
+      correct INTEGER NOT NULL, category TEXT NOT NULL DEFAULT 'Listening',
+      FOREIGN KEY(attempt_id) REFERENCES attempts(id)
+    );
+    CREATE INDEX IF NOT EXISTS token_results_key ON token_results(token_key);
+    """)
+    attempt_columns = {row[1] for row in con.execute("PRAGMA table_info(attempts)")}
+    token_columns = {row[1] for row in con.execute("PRAGMA table_info(token_results)")}
+    if "mode" not in attempt_columns:
+        con.execute("ALTER TABLE attempts ADD COLUMN mode TEXT NOT NULL DEFAULT 'Listening'")
+    if "level" not in attempt_columns:
+        con.execute("ALTER TABLE attempts ADD COLUMN level TEXT NOT NULL DEFAULT 'N5'")
+    if "weight" not in token_columns:
+        con.execute("ALTER TABLE token_results ADD COLUMN weight REAL NOT NULL DEFAULT 1.0")
+    con.commit()
+    return con
+
+
+def norm(value):
+    value = unicodedata.normalize("NFKC", value)
+    return re.sub(r"[\s。、！？?!,.\-・「」『』]", "", value)
+
+
+def distance(a, b):
+    if a == b:
+        return 0
+    prev = list(range(len(b) + 1))
+    for i, ca in enumerate(a, 1):
+        row = [i]
+        for j, cb in enumerate(b, 1):
+            row.append(min(row[-1] + 1, prev[j] + 1, prev[j - 1] + (ca != cb)))
+        prev = row
+    return prev[-1]
+
+
+def evaluate(phrase, submitted):
+    """Align typed text to words; accept the written form or the kana reading."""
+    typed = norm(submitted)
+    tokens = phrase["tokens"]
+    n = len(typed)
+    # Each state stores (edit cost, number of exact tokens, previous position, token match).
+    states = [{0: (0, 0, None, None)}]
+    for token in tokens:
+        alternatives = list(dict.fromkeys([norm(token["surface"]), norm(token["reading"])]))
+        next_states = {}
+        for start, (cost, exact_count, _, _) in states[-1].items():
+            max_len = min(n - start, max(map(len, alternatives)) + 4)
+            for length in range(max_len + 1):
+                piece = typed[start:start + length]
+                error = min(distance(piece, alt) for alt in alternatives)
+                exact = error == 0 and bool(piece)
+                score = (cost + error, -(exact_count + int(exact)))
+                end = start + length
+                old = next_states.get(end)
+                if old is None or score < (old[0], -old[1]):
+                    next_states[end] = (cost + error, exact_count + int(exact), start, {"typed":piece,"correct":exact,"distance":error})
+        states.append(next_states)
+    end = min(states[-1], key=lambda pos: (states[-1][pos][0] + n - pos, -states[-1][pos][1]))
+    overflow = typed[end:]
+    results = []
+    for i in range(len(tokens), 0, -1):
+        _, _, previous, match = states[i][end]
+        results.append({**tokens[i - 1], **match})
+        end = previous
+    results.reverse()
+    if overflow:
+        results[-1]["typed"] += overflow
+        results[-1]["correct"] = False
+        results[-1]["distance"] += len(overflow)
+    return results
+
+
+def engine_request(path, data=None, content_type=None):
+    headers = {"Content-Type":content_type} if content_type else {}
+    req = urllib.request.Request(VOICEVOX + path, data=data, headers=headers)
+    with urllib.request.urlopen(req, timeout=120) as response:
+        return response.read()
+
+
+def ensure_engine():
+    global ENGINE_PROCESS
+    try:
+        engine_request("/version")
+        return
+    except Exception:
+        pass
+    with LOCK:
+        try:
+            engine_request("/version")
+            return
+        except Exception:
+            pass
+        exe = ROOT.parent / "voicevox" / "engine" / "windows-nvidia" / "run.exe"
+        if not exe.exists():
+            raise RuntimeError("VOICEVOX não encontrado. Consulte voicevox/LEIA-ME.md.")
+        flags = getattr(subprocess, "CREATE_NO_WINDOW", 0)
+        ENGINE_PROCESS = subprocess.Popen([str(exe), "--host", "127.0.0.1", "--port", "50021", "--use_gpu"], cwd=str(exe.parent), creationflags=flags, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        for _ in range(60):
+            if ENGINE_PROCESS.poll() is not None:
+                raise RuntimeError("O motor de áudio terminou durante a inicialização.")
+            try:
+                engine_request("/version")
+                return
+            except Exception:
+                time.sleep(1)
+        raise RuntimeError("O motor de áudio não respondeu em 60 segundos.")
+
+
+def audio_for(phrase, speaker):
+    AUDIO_DIR.mkdir(exist_ok=True)
+    revision = "-" + hashlib.sha256(phrase["text"].encode("utf-8")).hexdigest()[:10] if phrase["level"] == "N4" else ""
+    path = AUDIO_DIR / f"{phrase['id']:03d}-voz-{speaker}{revision}.wav"
+    if not path.exists():
+        with LOCK:
+            if not path.exists():
+                query = engine_request("/audio_query?" + urllib.parse.urlencode({"speaker":speaker,"text":phrase["text"]}), data=b"")
+                wav = engine_request("/synthesis?" + urllib.parse.urlencode({"speaker":speaker}), data=query, content_type="application/json")
+                path.write_bytes(wav)
+    return path.read_bytes()
+
+
+PARTICLE_SURFACES = {"は", "が", "を", "に", "へ", "で", "と", "も", "の", "か", "ね", "よ", "や", "から", "まで", "だけ"}
+
+
+def spaced_segments(phrase):
+    """Keep each particle with the words before it, then mark a pause."""
+    decorated = []
+    position = 0
+    for token in phrase["tokens"]:
+        surface = token["surface"]
+        start = phrase["text"].find(surface, position)
+        if start < 0:
+            raise ValueError(f"Texto e trechos não coincidem na frase {phrase['id']}.")
+        punctuation = phrase["text"][position:start]
+        if decorated:
+            decorated[-1] += punctuation
+        decorated.append(surface)
+        position = start + len(surface)
+    decorated[-1] += phrase["text"][position:]
+    segments = []
+    current = ""
+    for index, token in enumerate(phrase["tokens"]):
+        current += decorated[index]
+        if index < len(phrase["tokens"]) - 1 and (token["surface"] in PARTICLE_SURFACES or token["kind"].startswith("partícula")):
+            segments.append((current, True))
+            current = ""
+    if current:
+        segments.append((current, False))
+    return segments
+
+
+def spaced_audio_for(phrase, speaker):
+    AUDIO_DIR.mkdir(exist_ok=True)
+    revision = hashlib.sha256(phrase["text"].encode("utf-8")).hexdigest()[:10]
+    path = AUDIO_DIR / f"{phrase['id']:03d}-voz-{speaker}-{revision}-particulas-v2.wav"
+    if not path.exists():
+        with LOCK:
+            if not path.exists():
+                chunks = []
+                audio_format = None
+                for text, pause_after in spaced_segments(phrase):
+                    query = json.loads(engine_request("/audio_query?" + urllib.parse.urlencode({"speaker": speaker, "text": text}), data=b""))
+                    query["prePhonemeLength"] = 0
+                    query["postPhonemeLength"] = 0
+                    wav = engine_request("/synthesis?" + urllib.parse.urlencode({"speaker": speaker}),
+                                         data=json.dumps(query, ensure_ascii=False).encode("utf-8"), content_type="application/json")
+                    with wave.open(io.BytesIO(wav), "rb") as reader:
+                        fmt = (reader.getnchannels(), reader.getsampwidth(), reader.getframerate())
+                        if audio_format is not None and fmt != audio_format:
+                            raise RuntimeError("Os trechos de áudio têm formatos incompatíveis.")
+                        audio_format = fmt
+                        chunks.append(reader.readframes(reader.getnframes()))
+                        if pause_after:
+                            chunks.append(b"\0" * round(reader.getframerate() * 0.5) * reader.getnchannels() * reader.getsampwidth())
+                output = io.BytesIO()
+                with wave.open(output, "wb") as writer:
+                    writer.setnchannels(audio_format[0])
+                    writer.setsampwidth(audio_format[1])
+                    writer.setframerate(audio_format[2])
+                    writer.writeframes(b"".join(chunks))
+                path.write_bytes(output.getvalue())
+    return path.read_bytes()
+
+
+def selection_audio_for(text, speaker):
+    """Small, cached audio clips for selected Japanese text."""
+    AUDIO_DIR.mkdir(exist_ok=True)
+    digest = hashlib.sha256(text.encode("utf-8")).hexdigest()[:20]
+    path = AUDIO_DIR / f"selection-{digest}-voz-{speaker}.wav"
+    if not path.exists():
+        with LOCK:
+            if not path.exists():
+                query = engine_request("/audio_query?" + urllib.parse.urlencode({"speaker":speaker,"text":text}), data=b"")
+                wav = engine_request("/synthesis?" + urllib.parse.urlencode({"speaker":speaker}), data=query, content_type="application/json")
+                path.write_bytes(wav)
+    return path.read_bytes()
+
+
+def voices():
+    ensure_engine()
+    speakers = json.loads(engine_request("/speakers"))
+    return [{"id":style["id"],"label":f"{speaker['name']} · {style['name']}"}
+            for speaker in speakers for style in speaker["styles"]
+            if "talk" in style.get("type","talk")]
+
+
+def skill_for(token):
+    kind = token["kind"]
+    if kind in ("partícula", "partícula final", "estrutura gramatical", "cópula polida"):
+        return "Grammar", 1.5
+    return "Vocabulary", 1.25
+
+
+def choose_blanks(phrase):
+    tokens = phrase["tokens"]
+    indices = phrase.get("focus_token_indices", []) if phrase["level"] == "N4" else list(range(len(tokens)))
+    if not indices: indices = list(range(len(tokens)))
+    grammar = [i for i in indices if skill_for(tokens[i])[0] == "Grammar"]
+    vocabulary = [i for i in indices if skill_for(tokens[i])[0] == "Vocabulary"]
+    maximum = min(4, len(indices), len(tokens) - 1)
+    focus = [i for i in phrase.get("focus_token_indices", []) if i in indices]
+    picked = {random.choice(focus)} if focus else set()
+    if grammar and not (picked & set(grammar)) and len(picked) < maximum:
+        picked.add(random.choice(grammar))
+    if vocabulary and not (picked & set(vocabulary)) and len(picked) < maximum:
+        picked.add(random.choice(vocabulary))
+    count = random.randint(max(2,len(picked)),maximum)
+    picked.update(random.sample([i for i in indices if i not in picked], count - len(picked)))
+    return sorted(picked)
+
+
+def save_attempt(phrase, submitted, results, mode):
+    correct = sum(r["correct"] for r in results)
+    with database() as con:
+        cursor = con.execute("INSERT INTO attempts(phrase_id,submitted,correct,total,detail_json,mode,level) VALUES(?,?,?,?,?,?,?)",
+            (phrase["id"], submitted, correct, len(results), json.dumps(results, ensure_ascii=False), mode, phrase["level"]))
+        for result in results:
+            category, weight = ("Listening", 1.0) if mode == "Listening" else skill_for(result)
+            key = f"{result['surface']}|{result['reading']}|{result['kind']}"
+            con.execute("""INSERT INTO token_results(attempt_id,token_key,surface,reading,kind,correct,category,weight)
+                VALUES(?,?,?,?,?,?,?,?)""",
+                (cursor.lastrowid,key,result["surface"],result["reading"],result["kind"],int(result["correct"]),category,weight))
+    return cursor.lastrowid, correct
+
+
+class Handler(BaseHTTPRequestHandler):
+    def send_bytes(self, code, data, content_type):
+        self.send_response(code)
+        self.send_header("Content-Type", content_type)
+        self.send_header("Content-Length", str(len(data)))
+        self.send_header("Cache-Control", "no-store")
+        self.end_headers()
+        self.wfile.write(data)
+
+    def send_json(self, code, value):
+        self.send_bytes(code, json.dumps(value, ensure_ascii=False).encode("utf-8"), "application/json; charset=utf-8")
+
+    def do_GET(self):
+        try:
+            path = urllib.parse.urlsplit(self.path).path
+            if path in ("/", "/index.html"):
+                return self.send_bytes(200, (ROOT / "index.html").read_bytes(), "text/html; charset=utf-8")
+            if path == "/style.css":
+                return self.send_bytes(200, (ROOT / "style.css").read_bytes(), "text/css; charset=utf-8")
+            if path == "/app.js":
+                return self.send_bytes(200, (ROOT / "app.js").read_bytes(), "application/javascript; charset=utf-8")
+            if path == "/api/next":
+                level = urllib.parse.parse_qs(urllib.parse.urlsplit(self.path).query).get("level", ["N5"])[0]
+                if level not in LEVEL_PHRASES: return self.send_json(400,{"error":"Nível inválido"})
+                with database() as con:
+                    recent = [row[0] for row in con.execute("SELECT phrase_id FROM attempts WHERE level=? ORDER BY id DESC LIMIT 8",(level,))]
+                options = [p for p in LEVEL_PHRASES[level] if p["id"] not in recent] or LEVEL_PHRASES[level]
+                choice = random.choice(options)
+                return self.send_json(200, {"id":choice["id"],"level":level,"category":choice.get("grammar_point",choice["category"]),"glossary":choice["tokens"]})
+            if path == "/api/cloze/next":
+                level = urllib.parse.parse_qs(urllib.parse.urlsplit(self.path).query).get("level", ["N5"])[0]
+                if level not in LEVEL_PHRASES: return self.send_json(400,{"error":"Nível inválido"})
+                with database() as con:
+                    recent = [row[0] for row in con.execute("SELECT phrase_id FROM attempts WHERE level=? AND mode='Writing' ORDER BY id DESC LIMIT 8",(level,))]
+                options = [p for p in LEVEL_PHRASES[level] if p["id"] not in recent and len(p["tokens"]) >= 3]
+                choice = random.choice(options or LEVEL_PHRASES[level])
+                blanks = choose_blanks(choice)
+                exercise_id = uuid.uuid4().hex
+                with SESSION_LOCK:
+                    SESSIONS[exercise_id] = (choice["id"], blanks, time.time())
+                    for key, (_, _, created) in list(SESSIONS.items()):
+                        if time.time() - created > 3600: SESSIONS.pop(key, None)
+                display_parts=[]
+                insertions={item["index"]:item["text"] for item in choice.get("display_after",[])}
+                for i,word in enumerate(choice["tokens"]):
+                    display_parts.append({"index":i,"surface":None if i in blanks else word["surface"],"blank":i in blanks})
+                    if i in insertions: display_parts.append({"index":-1,"surface":insertions[i],"blank":False})
+                return self.send_json(200, {"exercise_id":exercise_id,"id":choice["id"],"level":level,"glossary":choice["tokens"],
+                    "category":choice.get("grammar_point",choice["category"]),"translation_pt":choice["translation_pt"],
+                    "punctuation":choice["text"][-1],
+                    "parts":display_parts})
+            if path == "/api/voices":
+                return self.send_json(200, {"voices":voices()})
+            if path == "/api/metadata":
+                levels = {level:{"phrase_count":len(items),"grammar_topics":len({p.get("grammar_point") for p in items if p.get("grammar_point")})} for level,items in LEVEL_PHRASES.items()}
+                return self.send_json(200,{"phrase_count":len(PHRASES),"levels":levels})
+            if path == "/api/stats":
+                with database() as con:
+                    summary = con.execute("""SELECT level,mode,COUNT(*),COALESCE(SUM(correct),0),COALESCE(SUM(total),0)
+                        FROM attempts GROUP BY level,mode""").fetchall()
+                    scores = con.execute("""SELECT attempts.level,attempts.mode,SUM(token_results.weight*token_results.correct),
+                        SUM(token_results.weight) FROM token_results JOIN attempts ON attempts.id=token_results.attempt_id
+                        GROUP BY attempts.level,attempts.mode""").fetchall()
+                    rows = con.execute("""SELECT attempts.level,attempts.mode,token_results.surface,token_results.reading,
+                        token_results.kind, COUNT(*), SUM(token_results.correct), token_results.category
+                        FROM token_results JOIN attempts ON attempts.id=token_results.attempt_id
+                        GROUP BY attempts.level,attempts.mode,token_results.token_key,token_results.category
+                        HAVING SUM(token_results.correct) < COUNT(*)
+                        ORDER BY (COUNT(*)-SUM(token_results.correct)) DESC,
+                            (1.0*SUM(token_results.correct)/COUNT(*)) ASC""").fetchall()
+                metrics = {(level,mode):{"attempts":count,"correct_tokens":correct,"total_tokens":total,
+                    "earned_weight":0,"possible_weight":0,"needs_practice":[]}
+                    for level,mode,count,correct,total in summary}
+                for level,mode,earned,possible in scores:
+                    metrics[(level,mode)]["earned_weight"] = earned or 0
+                    metrics[(level,mode)]["possible_weight"] = possible or 0
+                for level,mode,surface,reading,kind,count,correct,category in rows:
+                    if len(metrics[(level,mode)]["needs_practice"]) < 20:
+                        metrics[(level,mode)]["needs_practice"].append({"surface":surface,"reading":reading,
+                            "kind":kind,"attempts":count,"correct":correct,"category":category})
+                return self.send_json(200,{"levels":{level:{mode:metrics.get((level,mode)) for mode in ("Listening","Writing")} for level in LEVEL_PHRASES}})
+            if path == "/api/selection-audio":
+                query = urllib.parse.parse_qs(urllib.parse.urlsplit(self.path).query)
+                selected = query.get("text",[""])[0].strip()
+                if not selected or len(selected) > 100 or not re.search(r"[\u3040-\u30ff\u3400-\u9fff]", selected):
+                    return self.send_json(400,{"error":"Selecione até 100 caracteres japoneses"})
+                try: speaker = int(query.get("speaker",[2])[0])
+                except (ValueError,TypeError): return self.send_json(400,{"error":"Voz inválida"})
+                if speaker not in {v["id"] for v in voices()}:
+                    return self.send_json(400,{"error":"Voz indisponível"})
+                return self.send_bytes(200,selection_audio_for(selected,speaker),"audio/wav")
+            match = re.fullmatch(r"/api/audio/(\d+)", path)
+            if match:
+                phrase = PHRASES.get(int(match.group(1)))
+                if phrase is None: return self.send_json(404,{"error":"Frase não encontrada"})
+                query = urllib.parse.parse_qs(urllib.parse.urlsplit(self.path).query)
+                try: speaker = int(query.get("speaker",[2])[0])
+                except (ValueError,TypeError): return self.send_json(400,{"error":"Voz inválida"})
+                if speaker not in {v["id"] for v in voices()}:
+                    return self.send_json(400,{"error":"Voz indisponível"})
+                ensure_engine()
+                spaced = query.get("spaced", ["0"])[0] == "1"
+                return self.send_bytes(200, spaced_audio_for(phrase,speaker) if spaced else audio_for(phrase,speaker), "audio/wav")
+            return self.send_json(404,{"error":"Rota não encontrada"})
+        except Exception as exc:
+            self.send_json(500,{"error":str(exc)})
+
+    def do_POST(self):
+        try:
+            if self.path not in ("/api/submit", "/api/cloze/submit"):
+                return self.send_json(404,{"error":"Rota não encontrada"})
+            length = int(self.headers.get("Content-Length","0"))
+            if length > 8192: return self.send_json(413,{"error":"Resposta muito longa"})
+            body = json.loads(self.rfile.read(length))
+            if self.path == "/api/cloze/submit":
+                exercise_id = str(body.get("exercise_id",""))
+                with SESSION_LOCK:
+                    session = SESSIONS.pop(exercise_id, None)
+                if session is None or time.time() - session[2] > 3600:
+                    return self.send_json(400,{"error":"Exercício expirado. Abra outra frase."})
+                phrase_id, blanks, _ = session
+                phrase = PHRASES[phrase_id]
+                answers = body.get("answers",{})
+                if not isinstance(answers,dict):
+                    return self.send_json(400,{"error":"Respostas inválidas"})
+                results = []
+                for index in blanks:
+                    token = phrase["tokens"][index]
+                    typed = str(answers.get(str(index),""))[:100]
+                    accepted = {norm(token["surface"]), norm(token["reading"])}
+                    category, weight = skill_for(token)
+                    results.append({**token,"index":index,"typed":typed,
+                        "correct":bool(norm(typed)) and norm(typed) in accepted,
+                        "category":category,"weight":weight})
+                submitted = json.dumps(answers,ensure_ascii=False)
+                attempt_id, correct = save_attempt(phrase,submitted,results,"Writing")
+                return self.send_json(200,{"mode":"Writing","phrase":phrase,"results":results,
+                    "correct":correct,"total":len(results),"attempt_id":attempt_id})
+            phrase = PHRASES.get(int(body.get("id",0)))
+            submitted = str(body.get("text",""))
+            if phrase is None or not norm(submitted): return self.send_json(400,{"error":"Informe uma frase válida"})
+            results = evaluate(phrase,submitted)
+            attempt_id, correct = save_attempt(phrase,submitted,results,"Listening")
+            self.send_json(200,{"mode":"Listening","phrase":phrase,"submitted":submitted,
+                "results":results,"correct":correct,"total":len(results),"attempt_id":attempt_id})
+        except Exception as exc:
+            self.send_json(500,{"error":str(exc)})
+
+
+class LocalHTTPServer(ThreadingHTTPServer):
+    allow_reuse_address = False
+
+
+if __name__ == "__main__":
+    database().close()
+    server = LocalHTTPServer(("127.0.0.1",8765),Handler)
+    print("Treino N5: http://127.0.0.1:8765",flush=True)
+    server.serve_forever()

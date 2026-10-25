@@ -1,0 +1,9 @@
+voicevox/engine/
+voicevox/user-data/
+voicevox/*.wav
+voicevox/*.log
+treino-n5/audio-cache/
+treino-n5/desempenho.sqlite3*
+treino-n5/*.log
+__pycache__/
+*.pyc
