@@ -286,6 +286,17 @@ def choose_blanks(phrase):
     return sorted(picked)
 
 
+def cloze_choices(phrase, blanks):
+    """Offer every missing surface among ten unique, same-level words."""
+    answers = {phrase["tokens"][i]["surface"] for i in blanks}
+    visible = {token["surface"] for i, token in enumerate(phrase["tokens"]) if i not in blanks}
+    pool = {token["surface"] for item in LEVEL_PHRASES[phrase["level"]]
+            for token in item["tokens"] if token["surface"] not in answers | visible}
+    choices = list(answers) + random.sample(sorted(pool), 10 - len(answers))
+    random.shuffle(choices)
+    return choices
+
+
 def save_attempt(phrase, submitted, results, mode):
     correct = sum(r["correct"] for r in results)
     with database() as con:
@@ -350,7 +361,7 @@ class Handler(BaseHTTPRequestHandler):
                 return self.send_json(200, {"exercise_id":exercise_id,"id":choice["id"],"level":level,"glossary":choice["tokens"],
                     "category":choice.get("grammar_point",choice["category"]),"translation_pt":choice["translation_pt"],
                     "punctuation":choice["text"][-1],
-                    "parts":display_parts})
+                    "parts":display_parts,"choices":cloze_choices(choice,blanks)})
             if path == "/api/voices":
                 return self.send_json(200, {"voices":voices()})
             if path == "/api/metadata":

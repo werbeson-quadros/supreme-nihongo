@@ -20,6 +20,13 @@
 .blank-input{width:104px;border:1.5px solid #87b69a;border-radius:8px;background:#f5fbf6;padding:8px 9px;font:19px 'Noto Sans JP',sans-serif;color:#1b5439;outline:none;text-align:center}
 .blank-input:focus{border-color:#2f7658;box-shadow:0 0 0 3px #85bb962e}
 .blank-input::placeholder{color:#a8c3ae;font-size:16px}
+.choice-label{font-size:11px;font-weight:700;color:#718b78;margin:20px 0 10px}
+.cloze-choices{display:flex;flex-wrap:wrap;gap:8px}
+.choice-word{border:1px solid #b9d5bf;border-radius:9px;background:#f6fbf5;color:#285f40;padding:8px 13px;font:500 17px 'Noto Sans JP',sans-serif;min-height:40px}
+.choice-word:hover,.choice-word:focus-visible{background:#dcefdc;border-color:#5b9d71;outline:none}
+html[data-theme="dark"] .choice-label{color:#adbfaf}
+html[data-theme="dark"] .choice-word{background:#20352a;border-color:#4b6953;color:#e5f3e7}
+html[data-theme="dark"] .choice-word:hover,html[data-theme="dark"] .choice-word:focus-visible{background:#31533d;border-color:#83b894}
 .mode-scores{display:flex;flex-direction:column;gap:8px;margin-top:24px;padding:13px 0;border-top:1px solid #e9efe8;border-bottom:1px solid #e9efe8}
 .mode-scores div{display:flex;justify-content:space-between;font-size:11px;color:#778b7a}.mode-scores b{color:#2f7356;font-size:12px}
 .progress .divider{display:none}.progress h3{margin-top:22px}

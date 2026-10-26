@@ -1,6 +1,6 @@
 const $ = (selector) => document.querySelector(selector);
 const savedRate = Number(localStorage.getItem('n5PlaybackRate'));
-const playbackRate = [0.5,0.75,1,1.25,1.5,2].includes(savedRate) ? savedRate : 1;
+const playbackRate = [0.5,0.75,0.85,1,1.25,1.5,2].includes(savedRate) ? savedRate : 1;
 const state = {mode:'Listening',level:localStorage.getItem('n5Level') === 'N4' ? 'N4' : 'N5',id:null,exerciseId:null,glossary:[],voice:2,replays:0,playStarted:false,playbackRate,particlePause:localStorage.getItem('n5ParticlePause') === 'true',loading:false,loadToken:0,phraseCount:0};
 const audio = $('#audio');
 const dialog = $('#resultDialog');
@@ -140,6 +140,7 @@ function renderCloze(phrase) {
   $('#objective').textContent = phrase.translation_pt;
   const parts = $('#clozeParts');
   parts.replaceChildren();
+  let activeBlank = null;
   for (const part of phrase.parts) {
     if (part.blank) {
       const input = document.createElement('input');
@@ -152,6 +153,7 @@ function renderCloze(phrase) {
       input.spellcheck = false;
       input.autocomplete = 'off';
       input.required = true;
+      input.addEventListener('focus', () => { activeBlank = input; });
       parts.append(input);
     } else {
       const span = document.createElement('span');
@@ -164,6 +166,23 @@ function renderCloze(phrase) {
   mark.className = 'fixed-part';
   mark.textContent = phrase.punctuation;
   parts.append(mark);
+  const choices = $('#clozeChoices');
+  choices.replaceChildren();
+  for (const surface of phrase.choices) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'choice-word';
+    button.textContent = surface;
+    button.addEventListener('click', () => {
+      const inputs = [...parts.querySelectorAll('input')];
+      const target = activeBlank && !activeBlank.value.trim() ? activeBlank : inputs.find(input => !input.value.trim()) || activeBlank || inputs[0];
+      if (!target) return;
+      target.value = surface;
+      target.dispatchEvent(new Event('input', {bubbles:true}));
+      (inputs.find(input => !input.value.trim()) || target).focus();
+    });
+    choices.append(button);
+  }
 }
 
 async function loadPhrase() {
