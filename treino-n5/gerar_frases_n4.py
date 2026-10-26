@@ -501,8 +501,12 @@ def build():
             "display_after":display_after})
     from cenarios_n4 import extend
     extend(phrases)
+    from shorten_n4 import shorten_longest
+    shortened_ids = shorten_longest(phrases, rows, token)
+    from novas_frases_n4 import append_short_phrases
+    append_short_phrases(phrases)
     path=Path(__file__).with_name("Lista e Frases N4.json")
     path.write_text(json.dumps({"title":"Lista e Frases N4","language":"ja","translation_language":"pt-BR","phrases":phrases},ensure_ascii=False,indent=2),encoding="utf-8")
-    print(f"{path}: {len(phrases)} frases, {len(rows)} tópicos, {min(map(lambda p:len(p['text']),phrases))} caracteres mínimos")
+    print(f"{path}: {len(phrases)} frases, {len(rows)} tópicos, {len(shortened_ids)} frases reduzidas")
 
 if __name__=="__main__": build()
