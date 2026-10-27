@@ -18,8 +18,9 @@ The installer automatically selects CUDA when it detects an NVIDIA GPU, or the C
 - 520 annotated N5 sentences, 1,200 annotated N4 sentences, and 300 short N3 sentences, with full Portuguese translations.
 - Listening transcription and Japanese sentence completion exercises.
 - Multiple VOICEVOX voices, play/pause, playback speed from 0.5× to 2×, and an optional 0.5-second pause after each identified particle.
-- On-demand reading of selected Japanese text with a meaning tooltip.
+- On-demand reading of selected Japanese text with a meaning tooltip and a save-for-review button.
 - Separate listening and writing scores for words and grammar, stored in a local SQLite database.
+- Level-specific review flashcards for the 20 most missed terms and saved words, excerpts, or sentences. Cards have readings, translations, personal notes, 0.85× audio, and a two-seconds-per-side automatic mode.
 - Dark theme and a review ranking.
 
 The sentence data lives in `treino-n5/Lista e Frases N5.json`, `treino-n5/Lista e Frases N4.json`, and `treino-n5/Lista e Frases N3.json`. See [app documentation](treino-n5/README.md) and [voice setup](voicevox/README.md) for details.

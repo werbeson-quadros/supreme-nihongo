@@ -16,7 +16,7 @@
         <h1 id="heroTitle">Treine o ouvido.<br><em>Palavra por palavra.</em></h1>
         <p id="heroDescription">Uma frase N5 por vez. Ouça quantas vezes precisar e escreva exatamente o que entendeu.</p>
       </section>
-      <div class="training-controls"><div class="mode-tabs" role="tablist" aria-label="Modo de treino"><button class="mode-tab active" data-mode="Listening" role="tab" aria-selected="true">♫ &nbsp; Escuta</button><button class="mode-tab" data-mode="Writing" role="tab" aria-selected="false">✎ &nbsp; Complete a frase</button></div><label class="level-control" for="levelSelect">Nível <select id="levelSelect" aria-label="Nível das frases"><option value="N5">N5</option><option value="N4">N4</option><option value="N3">N3</option></select></label></div>
+      <div class="training-controls"><div class="mode-tabs" role="tablist" aria-label="Modo de treino"><button class="mode-tab active" data-mode="Listening" role="tab" aria-selected="true">♫ &nbsp; Escuta</button><button class="mode-tab" data-mode="Writing" role="tab" aria-selected="false">✎ &nbsp; Complete a frase</button></div><div class="level-actions"><label class="level-control" for="levelSelect">Nível <select id="levelSelect" aria-label="Nível das frases"><option value="N5">N5</option><option value="N4">N4</option><option value="N3">N3</option></select></label><button id="openReview" class="review-open" type="button">▣ Revisão</button></div></div>
       <div class="content-grid">
         <section class="exercise card">
           <div class="card-top"><span id="levelPill" class="pill">NÍVEL N5</span><span id="category" class="category">Preparando frase…</span></div>
@@ -63,6 +63,14 @@
       <div class="dialog-actions"><button id="nextPhrase" class="submit">Próxima frase <span>→</span></button></div>
     </div>
     <div id="dialogSelectionTooltip" class="selection-tooltip" role="tooltip" hidden></div>
+  </dialog>
+  <dialog id="reviewDialog" class="review-dialog" aria-labelledby="reviewTitle">
+    <div class="review-inner">
+      <div class="review-header"><div><span class="review-eyebrow">REVISÃO POR NÍVEL</span><h2 id="reviewTitle">Revisão N5</h2><p id="reviewCount">Carregando cartões…</p></div><button id="closeReview" class="close" type="button" aria-label="Fechar revisão">×</button></div>
+      <div id="reviewCard" class="review-card" hidden><div id="reviewFlip" class="review-flip"><button id="reviewFront" class="review-face review-front" type="button" aria-label="Virar cartão"><span>TOQUE PARA VIRAR</span><strong id="reviewFrontText" lang="ja"></strong><small id="reviewSource"></small></button><div id="reviewBack" class="review-face review-back" inert><span>RESPOSTA</span><strong id="reviewBackText" lang="ja"></strong><div id="reviewReading" class="review-reading" lang="ja"></div><p id="reviewMeaning"></p><label for="reviewNote">Sua nota</label><textarea id="reviewNote" rows="2" maxlength="2000" placeholder="Escreva uma dica para lembrar…"></textarea><button id="reviewAudio" class="review-audio" type="button">▶ Ouvir a 0,85×</button></div></div></div>
+      <div id="reviewEmpty" class="review-empty" hidden>Nenhum cartão para revisar neste nível. Salve um trecho da frase ou continue praticando.</div>
+      <div class="review-actions"><label class="review-auto"><input id="reviewAuto" type="checkbox"> Automático · 2 s por lado</label><div><button id="reviewRemove" class="review-remove" type="button">Remover da lista</button><button id="reviewNext" class="submit" type="button">Próximo <span>→</span></button></div></div>
+    </div>
   </dialog>
   <div id="selectionTooltip" class="selection-tooltip" role="tooltip" hidden></div>
   <script src="/app.js"></script>

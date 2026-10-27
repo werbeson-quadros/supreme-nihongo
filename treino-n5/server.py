@@ -46,6 +46,16 @@ def database():
       FOREIGN KEY(attempt_id) REFERENCES attempts(id)
     );
     CREATE INDEX IF NOT EXISTS token_results_key ON token_results(token_key);
+    CREATE TABLE IF NOT EXISTS review_saved (
+      level TEXT NOT NULL, item_key TEXT NOT NULL, kind TEXT NOT NULL,
+      text TEXT NOT NULL, reading TEXT NOT NULL, meaning TEXT NOT NULL,
+      note TEXT NOT NULL DEFAULT '', phrase_id INTEGER,
+      PRIMARY KEY(level, item_key)
+    );
+    CREATE TABLE IF NOT EXISTS review_removed (
+      level TEXT NOT NULL, item_key TEXT NOT NULL,
+      PRIMARY KEY(level, item_key)
+    );
     """)
     attempt_columns = {row[1] for row in con.execute("PRAGMA table_info(attempts)")}
     token_columns = {row[1] for row in con.execute("PRAGMA table_info(token_results)")}
@@ -62,6 +72,81 @@ def database():
 def norm(value):
     value = unicodedata.normalize("NFKC", value)
     return re.sub(r"[\s。、！？?!,.\-・「」『』]", "", value)
+
+
+def review_key(kind, text):
+    return f"{kind}:{norm(text)}"
+
+
+def selected_review_item(phrase, selected):
+    """Resolve a selection against stored phrase tokens, never client meanings."""
+    selected = selected.strip()
+    if not selected or len(selected) > 100 or not re.search(r"[\u3040-\u30ff\u3400-\u9fff]", selected):
+        raise ValueError("Selecione até 100 caracteres japoneses da frase.")
+    if norm(selected) == norm(phrase["text"]):
+        return {"kind":"phrase", "text":phrase["text"],
+                "reading":"".join(t["reading"] for t in phrase["tokens"]),
+                "meaning":phrase["translation_pt"]}
+    chosen = norm(selected)
+    surfaces = norm("".join(t["surface"] for t in phrase["tokens"]))
+    readings = norm("".join(t["reading"] for t in phrase["tokens"]))
+    source = "surface" if chosen in surfaces else "reading" if chosen in readings else None
+    if source is None:
+        raise ValueError("O trecho selecionado não pertence à frase atual.")
+    start = (surfaces if source == "surface" else readings).find(chosen)
+    matching = []
+    position = 0
+    for token in phrase["tokens"]:
+        end = position + len(norm(token[source]))
+        if end > start and position < start + len(chosen):
+            matching.append(token)
+        position = end
+    if not matching:
+        raise ValueError("Nenhuma palavra correspondente foi encontrada.")
+    return {"kind":"word" if len(matching) == 1 else "excerpt", "text":selected,
+            "reading":"".join(t["reading"] for t in matching),
+            "meaning":" · ".join("/".join(t["meanings_pt"]) for t in matching)}
+
+
+def review_cards(level):
+    """Return the 20 hardest active tokens plus saved words and sentences."""
+    with database() as con:
+        excluded = {row[0] for row in con.execute(
+            "SELECT item_key FROM review_removed WHERE level=?", (level,))}
+        ranked = con.execute("""SELECT tr.surface,tr.reading,tr.kind,
+            COUNT(*)-SUM(tr.correct) AS errors,COUNT(*) AS attempts
+            FROM token_results tr JOIN attempts a ON a.id=tr.attempt_id
+            WHERE a.level=? GROUP BY tr.surface,tr.reading,tr.kind
+            HAVING errors>0 ORDER BY errors DESC,
+            1.0*SUM(tr.correct)/COUNT(*) ASC,attempts DESC""", (level,)).fetchall()
+        saved = con.execute("""SELECT item_key,kind,text,reading,meaning,note
+            FROM review_saved WHERE level=? ORDER BY rowid DESC""", (level,)).fetchall()
+    glossary = {(t["surface"],t["reading"]): t for p in LEVEL_PHRASES[level] for t in p["tokens"]}
+    cards = []
+    seen = set()
+    for surface,reading,kind,errors,attempts in ranked:
+        key = review_key("word",surface)
+        if key in excluded or key in seen: continue
+        token = glossary.get((surface,reading))
+        cards.append({"key":key,"kind":"word","text":surface,"reading":reading,
+            "meaning":" · ".join(token["meanings_pt"]) if token else kind,
+            "note":"","source":"mistakes","errors":errors,"attempts":attempts})
+        seen.add(key)
+        if len(cards) == 20: break
+    saved_cards = []
+    for key,kind,surface,reading,meaning,note in saved:
+        if key in excluded: continue
+        card = {"key":key,"kind":kind,"text":surface,"reading":reading,
+                "meaning":meaning,"note":note,"source":"saved"}
+        if key in seen:
+            for existing in cards:
+                if existing["key"] == key:
+                    existing.update({"note":note,"meaning":meaning,"source":"mistakes + saved"})
+                    break
+        else:
+            saved_cards.append(card)
+            seen.add(key)
+    return cards + saved_cards
 
 
 def distance(a, b):
@@ -367,6 +452,10 @@ class Handler(BaseHTTPRequestHandler):
             if path == "/api/metadata":
                 levels = {level:{"phrase_count":len(items),"grammar_topics":len({p.get("grammar_point") for p in items if p.get("grammar_point")})} for level,items in LEVEL_PHRASES.items()}
                 return self.send_json(200,{"phrase_count":len(PHRASES),"levels":levels})
+            if path == "/api/review":
+                level = urllib.parse.parse_qs(urllib.parse.urlsplit(self.path).query).get("level", ["N5"])[0]
+                if level not in LEVEL_PHRASES: return self.send_json(400,{"error":"Nível inválido"})
+                return self.send_json(200,{"level":level,"cards":review_cards(level)})
             if path == "/api/stats":
                 with database() as con:
                     summary = con.execute("""SELECT level,mode,COUNT(*),COALESCE(SUM(correct),0),COALESCE(SUM(total),0)
@@ -420,11 +509,45 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         try:
-            if self.path not in ("/api/submit", "/api/cloze/submit"):
+            if self.path not in ("/api/submit", "/api/cloze/submit", "/api/review/save", "/api/review/note", "/api/review/remove"):
                 return self.send_json(404,{"error":"Rota não encontrada"})
             length = int(self.headers.get("Content-Length","0"))
             if length > 8192: return self.send_json(413,{"error":"Resposta muito longa"})
             body = json.loads(self.rfile.read(length))
+            if self.path.startswith("/api/review/"):
+                level = body.get("level")
+                if level not in LEVEL_PHRASES: return self.send_json(400,{"error":"Nível inválido"})
+                if self.path == "/api/review/save":
+                    phrase = PHRASES.get(body.get("phrase_id"))
+                    if phrase is None or phrase["level"] != level:
+                        return self.send_json(400,{"error":"Frase inválida para este nível"})
+                    try: item = selected_review_item(phrase,str(body.get("text","")))
+                    except ValueError as exc: return self.send_json(400,{"error":str(exc)})
+                    key = review_key(item["kind"],item["text"])
+                    with database() as con:
+                        con.execute("""INSERT INTO review_saved(level,item_key,kind,text,reading,meaning,phrase_id)
+                            VALUES(?,?,?,?,?,?,?) ON CONFLICT(level,item_key) DO UPDATE SET
+                            reading=excluded.reading,meaning=excluded.meaning,phrase_id=excluded.phrase_id""",
+                            (level,key,item["kind"],item["text"],item["reading"],item["meaning"],phrase["id"]))
+                        con.execute("DELETE FROM review_removed WHERE level=? AND item_key=?",(level,key))
+                    return self.send_json(200,{"saved":True,"key":key,"item":item})
+                key = str(body.get("key",""))
+                if not key or len(key)>120:
+                    return self.send_json(400,{"error":"Cartão inválido"})
+                card = next((c for c in review_cards(level) if c["key"] == key),None)
+                if card is None: return self.send_json(404,{"error":"Cartão não encontrado"})
+                if self.path == "/api/review/remove":
+                    with database() as con:
+                        con.execute("INSERT OR IGNORE INTO review_removed(level,item_key) VALUES(?,?)",(level,key))
+                        con.execute("DELETE FROM review_saved WHERE level=? AND item_key=?",(level,key))
+                    return self.send_json(200,{"removed":True})
+                note = str(body.get("note",""))
+                if len(note)>2000: return self.send_json(400,{"error":"Nota muito longa"})
+                with database() as con:
+                    con.execute("""INSERT INTO review_saved(level,item_key,kind,text,reading,meaning,note)
+                        VALUES(?,?,?,?,?,?,?) ON CONFLICT(level,item_key) DO UPDATE SET note=excluded.note""",
+                        (level,key,card["kind"],card["text"],card["reading"],card["meaning"],note))
+                return self.send_json(200,{"saved":True,"note":note})
             if self.path == "/api/cloze/submit":
                 exercise_id = str(body.get("exercise_id",""))
                 with SESSION_LOCK:

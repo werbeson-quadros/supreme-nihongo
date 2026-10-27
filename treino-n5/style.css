@@ -126,3 +126,41 @@ html[data-theme="dark"] .selection-title{color:#a7e0b6;border-color:#405947}
 html[data-theme="dark"] .selection-definition{border-color:#3a5441}
 html[data-theme="dark"] .selection-definition small,html[data-theme="dark"] .selection-definition span{color:#b6cbb9}
 @media(max-width:540px){.result-audio{flex-wrap:wrap}.result-audio label{margin-left:auto}}
+.level-actions{display:flex;align-items:center;gap:10px}
+.review-open{border:1px solid #b9d5bf;border-radius:10px;background:#eaf5e9;color:#2a6c4b;padding:10px 14px;font-size:12px;font-weight:800;white-space:nowrap}
+.review-open:hover{background:#d9efdb}.review-open:disabled{opacity:.5}
+.selection-tooltip{pointer-events:auto;user-select:text}
+.selection-save{display:block;width:100%;margin-top:9px;padding:8px;border:1px solid #91be9e;border-radius:7px;background:#e8f5e9;color:#236744;font-size:11px;font-weight:800;text-align:center}
+.selection-save:hover{background:#d3ecd8}.selection-save:disabled{opacity:.7;cursor:default}
+.review-dialog{width:min(600px,calc(100vw - 24px));overflow:visible}
+.review-inner{padding:28px}.review-header{position:relative;display:flex;justify-content:space-between;gap:20px}
+.review-header .close{position:static;align-self:start;line-height:1}
+.review-eyebrow{font-size:10px;font-weight:800;letter-spacing:.15em;color:#37825b}
+.review-header h2{margin:7px 0 2px;font-size:25px}.review-header p{margin:0 0 20px;font-size:12px;color:#819486}
+.review-card{height:370px;perspective:1200px}.review-card[hidden],.review-empty[hidden]{display:none}
+.review-flip{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .5s ease}
+.review-flip.flipped{transform:rotateY(180deg)}
+.review-face{position:absolute;inset:0;width:100%;height:100%;backface-visibility:hidden;-webkit-backface-visibility:hidden;border:1px solid #cfe3d1;border-radius:17px;background:#f4faf3;color:#284a34}
+.review-front{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:28px;cursor:pointer}
+.review-front span,.review-back>span{font-size:10px;font-weight:800;letter-spacing:.15em;color:#6d9a77}
+.review-front strong{font:600 clamp(28px,5vw,42px) 'Noto Sans JP',sans-serif;text-align:center;overflow-wrap:anywhere}
+.review-front small{font-size:11px;color:#8da792}.review-front:hover{border-color:#74a981;background:#ebf6eb}
+.review-back{transform:rotateY(180deg);padding:23px;display:flex;flex-direction:column;align-items:flex-start;overflow:auto}
+.review-back strong{font:600 30px 'Noto Sans JP',sans-serif;margin-top:6px;overflow-wrap:anywhere}
+.review-reading{font:19px 'Noto Sans JP',sans-serif;color:#4a8b61;margin-top:1px}
+.review-back p{font-size:14px;line-height:1.5;margin:9px 0 13px;color:#435c48}
+.review-back label{font-size:11px;color:#6f8876;margin-bottom:5px}
+.review-back textarea{min-height:57px;max-height:80px;padding:9px 11px;font-size:12px;resize:vertical}
+.review-audio{margin-top:10px;border:0;border-radius:8px;background:#2f7658;color:#fff;padding:9px 12px;font-size:11px;font-weight:800}
+.review-empty{min-height:250px;display:grid;place-items:center;text-align:center;padding:28px;border:1px dashed #b9d3bf;border-radius:15px;color:#758c7b;font-size:13px;line-height:1.6}
+.review-actions{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:18px}
+.review-auto{font-size:11px;color:#58745f;margin:0;cursor:pointer}.review-auto input{accent-color:#2f7658;vertical-align:middle}
+.review-actions>div{display:flex;gap:8px}.review-remove{border:1px solid #e7c7c0;border-radius:8px;background:#fff;color:#aa5c52;padding:10px 12px;font-size:11px;font-weight:700}.review-remove:hover{background:#fff0ed}
+.review-actions button:disabled{opacity:.5;cursor:default}
+html[data-theme="dark"] .review-open,html[data-theme="dark"] .selection-save{background:#2b4b35;border-color:#557c60;color:#d5f3dc}
+html[data-theme="dark"] .review-face,html[data-theme="dark"] .review-empty{background:#26392d;border-color:#4a6a51;color:#e8f2e9}
+html[data-theme="dark"] .review-front:hover{background:#30503a}
+html[data-theme="dark"] .review-back p,html[data-theme="dark"] .review-auto{color:#c0d4c4}
+html[data-theme="dark"] .review-reading{color:#a3dbae}
+html[data-theme="dark"] .review-remove{background:#332b29;border-color:#78534d;color:#f4b4a8}
+@media(max-width:600px){.level-actions{width:100%;justify-content:space-between}.review-inner{padding:19px}.review-card{height:390px}.review-actions{flex-wrap:wrap}.review-actions>div{width:100%;justify-content:flex-end}}

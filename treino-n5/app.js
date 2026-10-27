@@ -395,7 +395,160 @@ $('#answer').addEventListener('keydown', event => {
 $('#closeDialog').addEventListener('click',() => dialog.close());
 $('#nextPhrase').addEventListener('click',() => { dialog.close(); loadPhrase(); });
 
-const selectionReader = {key:'',text:'',timer:null,checkTimer:null,generation:0};
+const reviewDialog = $('#reviewDialog');
+const reviewClip = new Audio();
+reviewClip.playbackRate = 0.85;
+const reviewState = {level:null,cards:[],index:0,flipped:false,timer:null,noteTimer:null,dirty:false,generation:0};
+
+function stopReviewTimer() {
+  clearTimeout(reviewState.timer);
+  reviewState.generation++;
+}
+
+function currentReviewCard() { return reviewState.cards[reviewState.index]; }
+
+async function persistReviewNote() {
+  clearTimeout(reviewState.noteTimer);
+  if (!reviewState.dirty || !currentReviewCard()) return;
+  const card = currentReviewCard();
+  const note = $('#reviewNote').value;
+  reviewState.dirty = false;
+  try {
+    await api('/api/review/note',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({level:reviewState.level,key:card.key,note})});
+    card.note = note;
+  } catch (error) {
+    reviewState.dirty = true;
+    throw error;
+  }
+}
+
+function renderReviewCard() {
+  stopReviewTimer();
+  reviewClip.pause();
+  const card = currentReviewCard();
+  $('#reviewTitle').textContent = `Revisão ${reviewState.level}`;
+  $('#reviewCard').hidden = !card;
+  $('#reviewEmpty').hidden = !!card;
+  $('#reviewRemove').disabled = !card;
+  $('#reviewNext').disabled = !card;
+  $('#reviewCount').textContent = card ? `${reviewState.index + 1} de ${reviewState.cards.length} cartões` : 'Nenhum cartão disponível';
+  if (!card) return;
+  reviewState.flipped = false;
+  reviewState.dirty = false;
+  $('#reviewFlip').classList.remove('flipped');
+  $('#reviewFront').inert = false;
+  $('#reviewBack').inert = true;
+  $('#reviewFrontText').textContent = card.text;
+  $('#reviewBackText').textContent = card.text;
+  $('#reviewReading').textContent = card.reading;
+  $('#reviewMeaning').textContent = card.meaning;
+  $('#reviewNote').value = card.note || '';
+  $('#reviewSource').textContent = card.source.includes('mistakes') ? `${card.errors} erros neste nível` : 'Salvo para revisão';
+  if ($('#reviewAuto').checked) scheduleReviewFlip();
+}
+
+function playReviewAudio() {
+  const card = currentReviewCard();
+  if (!card) return;
+  const url = `/api/selection-audio?text=${encodeURIComponent(card.text)}&speaker=${state.voice}`;
+  reviewClip.pause();
+  reviewClip.src = url;
+  reviewClip.playbackRate = 0.85;
+  reviewClip.play().catch(() => {});
+}
+
+function flipReviewCard() {
+  if (!currentReviewCard() || reviewState.flipped) return;
+  stopReviewTimer();
+  reviewState.flipped = true;
+  $('#reviewFlip').classList.add('flipped');
+  $('#reviewFront').inert = true;
+  $('#reviewBack').inert = false;
+  playReviewAudio();
+  if ($('#reviewAuto').checked) {
+    const generation = reviewState.generation;
+    reviewState.timer = setTimeout(() => {
+      if (generation === reviewState.generation) advanceReviewCard();
+    },2000);
+  }
+}
+
+function scheduleReviewFlip() {
+  stopReviewTimer();
+  if (!$('#reviewAuto').checked || !currentReviewCard()) return;
+  const generation = reviewState.generation;
+  reviewState.timer = setTimeout(() => {
+    if (generation === reviewState.generation) flipReviewCard();
+  },2000);
+}
+
+async function advanceReviewCard() {
+  stopReviewTimer();
+  try { await persistReviewNote(); }
+  catch (error) { $('#reviewAuto').checked = false; alert(error.message); return; }
+  if (!reviewState.cards.length) return;
+  reviewState.index = (reviewState.index + 1) % reviewState.cards.length;
+  renderReviewCard();
+}
+
+$('#openReview').addEventListener('click',async () => {
+  stopSelectionSpeech();
+  reviewState.level = state.level;
+  $('#openReview').disabled = true;
+  try {
+    const data = await api(`/api/review?level=${reviewState.level}`);
+    reviewState.cards = data.cards;
+    reviewState.index = 0;
+    $('#reviewAuto').checked = false;
+    reviewDialog.showModal();
+    renderReviewCard();
+  } catch (error) { alert(error.message); }
+  finally { $('#openReview').disabled = false; }
+});
+$('#closeReview').addEventListener('click',() => reviewDialog.close());
+reviewDialog.addEventListener('close',() => {
+  stopReviewTimer();
+  clearTimeout(reviewState.noteTimer);
+  reviewClip.pause();
+  $('#reviewAuto').checked = false;
+  persistReviewNote().catch(error => alert(error.message));
+});
+$('#reviewFront').addEventListener('click',flipReviewCard);
+$('#reviewAudio').addEventListener('click',playReviewAudio);
+$('#reviewNext').addEventListener('click',advanceReviewCard);
+$('#reviewAuto').addEventListener('change',event => {
+  stopReviewTimer();
+  if (!event.target.checked) return;
+  if (reviewState.flipped) {
+    const generation = reviewState.generation;
+    reviewState.timer = setTimeout(() => {
+      if (generation === reviewState.generation) advanceReviewCard();
+    },2000);
+  } else scheduleReviewFlip();
+});
+$('#reviewNote').addEventListener('input',() => {
+  reviewState.dirty = true;
+  clearTimeout(reviewState.noteTimer);
+  reviewState.noteTimer = setTimeout(() => persistReviewNote().catch(error => alert(error.message)),700);
+});
+$('#reviewRemove').addEventListener('click',async () => {
+  const card = currentReviewCard();
+  if (!card) return;
+  stopReviewTimer();
+  $('#reviewRemove').disabled = true;
+  try {
+    await api('/api/review/remove',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({level:reviewState.level,key:card.key})});
+    clearTimeout(reviewState.noteTimer);
+    reviewState.dirty = false;
+    reviewState.cards.splice(reviewState.index,1);
+    if (reviewState.index >= reviewState.cards.length) reviewState.index = 0;
+    renderReviewCard();
+  } catch (error) { alert(error.message); $('#reviewRemove').disabled = false; }
+});
+
+const selectionReader = {key:'',text:'',timer:null,checkTimer:null,generation:0,saved:false};
 const selectionAudio = new Audio();
 const japaneseCharacters = /[\u3040-\u30ff\u3400-\u9fff]/;
 const normalizeSelection = value => value.normalize('NFKC').replace(/[\s。、！？?!,.・「」『』“”]/g,'');
@@ -405,6 +558,7 @@ function stopSelectionSpeech() {
   clearTimeout(selectionReader.checkTimer);
   selectionReader.key = '';
   selectionReader.text = '';
+  selectionReader.saved = false;
   selectionReader.generation++;
   if ('speechSynthesis' in window) window.speechSynthesis.cancel();
   selectionAudio.pause();
@@ -472,6 +626,23 @@ function showSelectionMeaning(text, rect) {
     empty.textContent = 'Sem significado cadastrado para este trecho da frase.';
     tooltip.append(empty);
   }
+  const save = document.createElement('button');
+  save.type = 'button';
+  save.className = 'selection-save';
+  save.textContent = selectionReader.saved ? '★ Salvo para revisão' : '☆ Salvar para revisão';
+  save.setAttribute('aria-label',`Salvar ${text} para revisão`);
+  save.disabled = selectionReader.saved || !state.id || text.length > 100;
+  save.addEventListener('pointerdown',event => event.preventDefault());
+  save.addEventListener('click',async () => {
+    save.disabled = true;
+    try {
+      await api('/api/review/save',{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({level:state.level,phrase_id:state.id,text})});
+      selectionReader.saved = true;
+      save.textContent = '★ Salvo para revisão';
+    } catch (error) { save.disabled = false; alert(error.message); }
+  });
+  tooltip.append(save);
   tooltip.hidden = false;
   const bounds = tooltip.getBoundingClientRect();
   tooltip.style.left = `${Math.max(10,Math.min(rect.left,window.innerWidth-bounds.width-10))}px`;
@@ -505,6 +676,7 @@ function speakSelectedText(generation) {
 }
 
 function inspectSelection() {
+  if (reviewDialog.open) { stopSelectionSpeech(); return; }
   const selected = selectedJapanese();
   if (!selected || !japaneseCharacters.test(selected.text) || !normalizeSelection(selected.text)) {
     stopSelectionSpeech();
@@ -525,6 +697,7 @@ function inspectSelection() {
 }
 
 function scheduleSelectionInspection() {
+  if (reviewDialog.open) return;
   const current = selectedJapanese();
   if (!current || !japaneseCharacters.test(current.text)) { stopSelectionSpeech(); return; }
   clearTimeout(selectionReader.checkTimer);

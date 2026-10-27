@@ -15,3 +15,5 @@ The answer dialog also includes a Japanese audio player. Selecting Japanese text
 In **Listening** mode, the learner transcribes the audio. Written forms and kana readings are accepted, while whitespace and punctuation are ignored. Token alignment is approximate when a response contains several errors.
 
 In **Complete the sentence** mode, the Portuguese translation is the goal and two to four Japanese spans are blank. Only the blanks are scored. Grammar has a weight of 1.5, vocabulary 1.25, and listening 1. Results are stored by level and exercise mode in the local `desempenho.sqlite3` database.
+
+Selecting Japanese text in a phrase opens a meaning tooltip with a save button. **Review** opens level-specific flashcards: up to 20 terms with the most recorded mistakes, plus saved words, excerpts, and complete sentences. Flip a card to see its reading and Portuguese meaning, add a personal note, or play its audio at 0.85×. Automatic review shows the front for two seconds, flips and plays audio, then advances after another two seconds. Removing a card excludes it from future reviews until the same text is saved again. Review data stays in the local SQLite database.
