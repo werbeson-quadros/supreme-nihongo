@@ -1,6 +1,6 @@
 # Supreme Nihongo
 
-A local Japanese N5/N4 practice app for listening, sentence completion, and vocabulary review. The interface is in Brazilian Portuguese.
+A local Japanese N5/N4/N3 practice app for listening, sentence completion, and vocabulary review. The interface is in Brazilian Portuguese.
 
 ## Run locally
 
@@ -15,14 +15,14 @@ The installer automatically selects CUDA when it detects an NVIDIA GPU, or the C
 
 ## Features
 
-- 520 annotated N5 sentences and 1,200 annotated N4 sentences, with full Portuguese translations.
+- 520 annotated N5 sentences, 1,200 annotated N4 sentences, and 300 short N3 sentences, with full Portuguese translations.
 - Listening transcription and Japanese sentence completion exercises.
 - Multiple VOICEVOX voices, play/pause, playback speed from 0.5× to 2×, and an optional 0.5-second pause after each identified particle.
 - On-demand reading of selected Japanese text with a meaning tooltip.
 - Separate listening and writing scores for words and grammar, stored in a local SQLite database.
 - Dark theme and a review ranking.
 
-The sentence data lives in `treino-n5/Lista e Frases N5.json` and `treino-n5/Lista e Frases N4.json`. See [app documentation](treino-n5/README.md) and [voice setup](voicevox/README.md) for details.
+The sentence data lives in `treino-n5/Lista e Frases N5.json`, `treino-n5/Lista e Frases N4.json`, and `treino-n5/Lista e Frases N3.json`. See [app documentation](treino-n5/README.md) and [voice setup](voicevox/README.md) for details.
 
 ## Local data and dependencies
 

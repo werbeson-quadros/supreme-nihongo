@@ -1,7 +1,8 @@
 const $ = (selector) => document.querySelector(selector);
 const savedRate = Number(localStorage.getItem('n5PlaybackRate'));
 const playbackRate = [0.5,0.75,0.85,1,1.25,1.5,2].includes(savedRate) ? savedRate : 1;
-const state = {mode:'Listening',level:localStorage.getItem('n5Level') === 'N4' ? 'N4' : 'N5',id:null,exerciseId:null,glossary:[],voice:2,replays:0,playStarted:false,playbackRate,particlePause:localStorage.getItem('n5ParticlePause') === 'true',loading:false,loadToken:0,phraseCount:0};
+const savedLevel = localStorage.getItem('n5Level');
+const state = {mode:'Listening',level:['N5','N4','N3'].includes(savedLevel) ? savedLevel : 'N5',id:null,exerciseId:null,glossary:[],voice:2,replays:0,playStarted:false,playbackRate,particlePause:localStorage.getItem('n5ParticlePause') === 'true',loading:false,loadToken:0,phraseCount:0};
 const audio = $('#audio');
 const dialog = $('#resultDialog');
 const themeToggle = $('#themeToggle');
@@ -90,7 +91,7 @@ function setMode(mode) {
 }
 
 function setLevel(level) {
-  if (!['N5','N4'].includes(level)) return;
+  if (!['N5','N4','N3'].includes(level)) return;
   state.level = level;
   localStorage.setItem('n5Level', level);
   $('#levelSelect').value = level;
@@ -207,7 +208,7 @@ async function loadPhrase() {
     state.exerciseId = phrase.exercise_id || null;
     state.glossary = phrase.glossary || [];
     $('#category').textContent = phrase.category;
-    const number = level === 'N4' ? phrase.id - 1000 : phrase.id;
+    const number = level === 'N3' ? phrase.id - 2200 : level === 'N4' ? phrase.id - 1000 : phrase.id;
     $('.exercise-number').innerHTML = `${String(number).padStart(2,'0')} <small>/ ${state.phraseCount || '…'}</small>`;
     if (mode === 'Writing') renderCloze(phrase);
     loadAudio();
@@ -540,7 +541,7 @@ async function init() {
   $('#levelSelect').value = state.level;
   $('#levelPill').textContent = `NÍVEL ${state.level}`;
   document.title = `Prática ${state.level} · Supreme Nihongo`;
-  if (state.level === 'N4') $('#heroDescription').textContent = 'Uma frase N4 por vez. Ouça quantas vezes precisar e escreva exatamente o que entendeu.';
+  if (state.level !== 'N5') $('#heroDescription').textContent = `Uma frase ${state.level} por vez. Ouça quantas vezes precisar e escreva exatamente o que entendeu.`;
   await refreshMetadata();
   await loadVoices();
   refreshStats();

@@ -1,4 +1,4 @@
-"""Local N5/N4 trainer: static UI, VOICEVOX audio, and SQLite history."""
+"""Local N5/N4/N3 trainer: static UI, VOICEVOX audio, and SQLite history."""
 import json
 import io
 import hashlib
@@ -18,9 +18,9 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-DATA = [json.loads((ROOT / f"Lista e Frases {level}.json").read_text(encoding="utf-8")) for level in ("N5", "N4")]
+DATA = [json.loads((ROOT / f"Lista e Frases {level}.json").read_text(encoding="utf-8")) for level in ("N5", "N4", "N3")]
 PHRASES = {p["id"]: p for corpus in DATA for p in corpus["phrases"]}
-LEVEL_PHRASES = {level: [p for p in PHRASES.values() if p["level"] == level] for level in ("N5", "N4")}
+LEVEL_PHRASES = {level: [p for p in PHRASES.values() if p["level"] == level] for level in ("N5", "N4", "N3")}
 DB = ROOT / "desempenho.sqlite3"
 AUDIO_DIR = ROOT / "audio-cache"
 VOICEVOX = "http://127.0.0.1:50021"
@@ -165,7 +165,7 @@ def ensure_engine():
 
 def audio_for(phrase, speaker):
     AUDIO_DIR.mkdir(exist_ok=True)
-    revision = "-" + hashlib.sha256(phrase["text"].encode("utf-8")).hexdigest()[:10] if phrase["level"] == "N4" else ""
+    revision = "-" + hashlib.sha256(phrase["text"].encode("utf-8")).hexdigest()[:10] if phrase["level"] in ("N4", "N3") else ""
     path = AUDIO_DIR / f"{phrase['id']:03d}-voz-{speaker}{revision}.wav"
     if not path.exists():
         with LOCK:
@@ -270,7 +270,7 @@ def skill_for(token):
 
 def choose_blanks(phrase):
     tokens = phrase["tokens"]
-    indices = phrase.get("focus_token_indices", []) if phrase["level"] == "N4" else list(range(len(tokens)))
+    indices = phrase.get("focus_token_indices", []) if phrase["level"] in ("N4", "N3") else list(range(len(tokens)))
     if not indices: indices = list(range(len(tokens)))
     grammar = [i for i in indices if skill_for(tokens[i])[0] == "Grammar"]
     vocabulary = [i for i in indices if skill_for(tokens[i])[0] == "Vocabulary"]

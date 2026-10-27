@@ -1,10 +1,12 @@
-# N5 and N4 Listening and Writing Practice
+# N5, N4, and N3 Listening and Writing Practice
 
 Run `iniciar.ps1` in PowerShell. The interface opens at <http://127.0.0.1:8765/>.
 
-The N5 corpus contains 520 sentences, including five examples for each of 84 requested grammar topics. The N4 corpus contains 1,200 sentences: 400 started from 132 grammar topics, 500 combine vocabulary themes with conversation, classroom, research, family, and travel scenarios, and 300 new entries practice short N4 structures with vocabulary themes. The 200 longest entries from the previous 900-sentence corpus were replaced by sentences of at most 20 Japanese characters; the newest 300 have at most 25. Each sentence has a full Brazilian Portuguese translation. Its tokens carry written forms, readings, types, meanings, and usage notes.
+The N5 corpus contains 520 sentences, including five examples for each of 84 requested grammar topics. The N4 corpus contains 1,200 sentences: 400 started from 132 grammar topics, 500 combine vocabulary themes with conversation, classroom, research, family, and travel scenarios, and 300 new entries practice short N4 structures with vocabulary themes. The 200 longest entries from the previous 900-sentence corpus were replaced by sentences of at most 20 Japanese characters; the newest 300 have at most 25. The N3 corpus contains 300 sentences across 20 grammar patterns and everyday situations; each is at most 20 Japanese characters. Each sentence has a full Brazilian Portuguese translation. Its tokens carry written forms, readings, types, meanings, and usage notes.
 
-`gerar_frases.py`, `gramatica_extra.py`, `gerar_frases_n4.py`, `cenarios_n4.py`, `shorten_n4.py`, and `novas_frases_n4.py` are the editable corpus generators. Regenerating the additional N4 sentences requires a running VOICEVOX Engine to obtain readings.
+`gerar_frases.py`, `gramatica_extra.py`, `gerar_frases_n4.py`, `cenarios_n4.py`, `shorten_n4.py`, `novas_frases_n4.py`, and `gerar_frases_n3.py` are the editable corpus generators. Regenerating the additional N4 sentences requires a running VOICEVOX Engine to obtain readings. The N3 generator reuses the annotated N4 vocabulary and needs no voice engine.
+
+The N3 grammar selection follows the [JLPT Sensei N3 study list](https://jlptsensei.com/jlpt-n3-grammar-list/). The JLPT does not publish a fixed official grammar or vocabulary list, so level labels are study classifications rather than guarantees about exam content.
 
 VOICEVOX generates the audio. The voice selector lists available speakers and styles. The player supports play/pause, speeds from 0.5× to 2×, and an optional 0.5-second pause after each identified particle. Generated audio is cached under `audio-cache/`. The selected speed and particle-pause setting persist in the browser.
 
