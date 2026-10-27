@@ -8,6 +8,8 @@ The N5 corpus contains 520 sentences, including five examples for each of 84 req
 
 The N3 grammar selection follows the [JLPT Sensei N3 study list](https://jlptsensei.com/jlpt-n3-grammar-list/). The JLPT does not publish a fixed official grammar or vocabulary list, so level labels are study classifications rather than guarantees about exam content.
 
+The N4 list selector also includes 40 curated sentences from the Japanese auto-generated captions of [JLPT N4 LISTENING PRACTICE TEST WITH ANSWERS 2026.ちょうかい](https://www.youtube.com/watch?v=cy9P8f4lrEw). They are longer than 10 Japanese characters, end at `。`, and contain no exact duplicates within the video list or the original N4 corpus. Captions with clear recognition errors or merged speakers were omitted. The raw caption download is kept locally at `treino-n5/imports/youtube-cy9P8f4lrEw-ja-auto.txt` and excluded from Git; `importar_legenda_n4.py` documents the curated selections and can regenerate the JSON when the local caption file and VOICEVOX are available.
+
 VOICEVOX generates the audio. The voice selector lists available speakers and styles. The player supports play/pause, speeds from 0.5× to 2×, and an optional 0.5-second pause after each identified particle. Generated audio is cached under `audio-cache/`. The selected speed and particle-pause setting persist in the browser.
 
 The answer dialog also includes a Japanese audio player. Selecting Japanese text in an exercise or answer reads it aloud repeatedly until the selection is cleared. A small tooltip shows meanings from the current sentence's glossary. If the browser has no Japanese voice, the app uses a short locally generated audio clip.

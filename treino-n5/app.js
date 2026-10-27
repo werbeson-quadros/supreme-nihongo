@@ -2,7 +2,8 @@ const $ = (selector) => document.querySelector(selector);
 const savedRate = Number(localStorage.getItem('n5PlaybackRate'));
 const playbackRate = [0.5,0.75,0.85,1,1.25,1.5,2].includes(savedRate) ? savedRate : 1;
 const savedLevel = localStorage.getItem('n5Level');
-const state = {mode:'Listening',level:['N5','N4','N3'].includes(savedLevel) ? savedLevel : 'N5',id:null,exerciseId:null,glossary:[],voice:2,replays:0,playStarted:false,playbackRate,particlePause:localStorage.getItem('n5ParticlePause') === 'true',loading:false,loadToken:0,phraseCount:0};
+const state = {mode:'Listening',level:['N5','N4','N3'].includes(savedLevel) ? savedLevel : 'N5',listId:localStorage.getItem('n4PhraseList') || 'main',id:null,exerciseId:null,glossary:[],voice:2,replays:0,playStarted:false,playbackRate,particlePause:localStorage.getItem('n5ParticlePause') === 'true',loading:false,loadToken:0,phraseCount:0};
+const activeListId = () => state.level === 'N4' ? state.listId : 'main';
 const audio = $('#audio');
 const dialog = $('#resultDialog');
 const themeToggle = $('#themeToggle');
@@ -90,7 +91,7 @@ function setMode(mode) {
   refreshStats();
 }
 
-function setLevel(level) {
+async function setLevel(level) {
   if (!['N5','N4','N3'].includes(level)) return;
   state.level = level;
   localStorage.setItem('n5Level', level);
@@ -98,7 +99,8 @@ function setLevel(level) {
   $('#levelPill').textContent = `NÍVEL ${level}`;
   document.title = `Prática ${level} · Supreme Nihongo`;
   if (state.mode === 'Listening') $('#heroDescription').textContent = `Uma frase ${level} por vez. Ouça quantas vezes precisar e escreva exatamente o que entendeu.`;
-  refreshMetadata();
+  await refreshMetadata();
+  if (state.level !== level) return;
   loadPhrase();
   refreshStats();
 }
@@ -106,7 +108,13 @@ function setLevel(level) {
 async function refreshMetadata() {
   try {
     const data = await api('/api/metadata');
-    state.phraseCount = data.levels[state.level].phrase_count;
+    const lists = data.levels[state.level].lists;
+    const select = $('#phraseListSelect');
+    select.replaceChildren(...lists.map(item => new Option(item.title,item.id)));
+    if (!lists.some(item => item.id === activeListId())) state.listId = 'main';
+    select.value = activeListId();
+    $('#phraseListControl').hidden = state.level !== 'N4';
+    state.phraseCount = lists.find(item => item.id === activeListId()).phrase_count;
     $('#phraseCountMain').textContent = `/ ${state.phraseCount}`;
   } catch (error) { console.error(error); }
 }
@@ -202,13 +210,14 @@ async function loadPhrase() {
   $('#play').disabled = true;
   try {
     const level = state.level;
-    const phrase = await api(`${mode === 'Writing' ? '/api/cloze/next' : '/api/next'}?level=${level}`);
-    if (current !== state.loadToken || state.mode !== mode || state.level !== level) return;
+    const listId = activeListId();
+    const phrase = await api(`${mode === 'Writing' ? '/api/cloze/next' : '/api/next'}?level=${level}&list=${encodeURIComponent(listId)}`);
+    if (current !== state.loadToken || state.mode !== mode || state.level !== level || activeListId() !== listId) return;
     state.id = phrase.id;
     state.exerciseId = phrase.exercise_id || null;
     state.glossary = phrase.glossary || [];
     $('#category').textContent = phrase.category;
-    const number = level === 'N3' ? phrase.id - 2200 : level === 'N4' ? phrase.id - 1000 : phrase.id;
+    const number = listId === 'youtube:cy9P8f4lrEw' ? phrase.id - 2500 : level === 'N3' ? phrase.id - 2200 : level === 'N4' ? phrase.id - 1000 : phrase.id;
     $('.exercise-number').innerHTML = `${String(number).padStart(2,'0')} <small>/ ${state.phraseCount || '…'}</small>`;
     if (mode === 'Writing') renderCloze(phrase);
     loadAudio();
@@ -285,6 +294,12 @@ $('#particlePause').addEventListener('change', event => {
 });
 document.querySelectorAll('[data-mode]').forEach(button => button.addEventListener('click', () => setMode(button.dataset.mode)));
 $('#levelSelect').addEventListener('change', event => setLevel(event.target.value));
+$('#phraseListSelect').addEventListener('change', async event => {
+  state.listId = event.target.value;
+  localStorage.setItem('n4PhraseList',state.listId);
+  await refreshMetadata();
+  loadPhrase();
+});
 
 let lastStats = null;
 function renderStats() {

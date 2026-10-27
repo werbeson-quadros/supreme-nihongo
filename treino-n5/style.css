@@ -127,6 +127,9 @@ html[data-theme="dark"] .selection-definition{border-color:#3a5441}
 html[data-theme="dark"] .selection-definition small,html[data-theme="dark"] .selection-definition span{color:#b6cbb9}
 @media(max-width:540px){.result-audio{flex-wrap:wrap}.result-audio label{margin-left:auto}}
 .level-actions{display:flex;align-items:center;gap:10px}
+.level-control[hidden]{display:none}
+#phraseListSelect{max-width:260px;text-overflow:ellipsis}
+@media(max-width:760px){.level-actions{flex-wrap:wrap}#phraseListSelect{max-width:min(55vw,260px)}}
 .review-open{border:1px solid #b9d5bf;border-radius:10px;background:#eaf5e9;color:#2a6c4b;padding:10px 14px;font-size:12px;font-weight:800;white-space:nowrap}
 .review-open:hover{background:#d9efdb}.review-open:disabled{opacity:.5}
 .selection-tooltip{pointer-events:auto;user-select:text}

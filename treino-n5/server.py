@@ -19,8 +19,12 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 DATA = [json.loads((ROOT / f"Lista e Frases {level}.json").read_text(encoding="utf-8")) for level in ("N5", "N4", "N3")]
-PHRASES = {p["id"]: p for corpus in DATA for p in corpus["phrases"]}
+VIDEO_N4 = json.loads((ROOT / "Lista e Frases N4 - YouTube cy9P8f4lrEw.json").read_text(encoding="utf-8"))
+ALL_DATA = DATA + [VIDEO_N4]
+PHRASES = {p["id"]: p for corpus in ALL_DATA for p in corpus["phrases"]}
 LEVEL_PHRASES = {level: [p for p in PHRASES.values() if p["level"] == level] for level in ("N5", "N4", "N3")}
+LIST_PHRASES = {level:{"main":corpus["phrases"]} for level,corpus in zip(("N5","N4","N3"),DATA)}
+LIST_PHRASES["N4"]["youtube:cy9P8f4lrEw"] = VIDEO_N4["phrases"]
 DB = ROOT / "desempenho.sqlite3"
 AUDIO_DIR = ROOT / "audio-cache"
 VOICEVOX = "http://127.0.0.1:50021"
@@ -418,20 +422,26 @@ class Handler(BaseHTTPRequestHandler):
             if path == "/app.js":
                 return self.send_bytes(200, (ROOT / "app.js").read_bytes(), "application/javascript; charset=utf-8")
             if path == "/api/next":
-                level = urllib.parse.parse_qs(urllib.parse.urlsplit(self.path).query).get("level", ["N5"])[0]
+                query = urllib.parse.parse_qs(urllib.parse.urlsplit(self.path).query)
+                level = query.get("level", ["N5"])[0]
                 if level not in LEVEL_PHRASES: return self.send_json(400,{"error":"Nível inválido"})
+                list_id = query.get("list", ["main"])[0]
+                if list_id not in LIST_PHRASES[level]: return self.send_json(400,{"error":"Lista inválida"})
                 with database() as con:
                     recent = [row[0] for row in con.execute("SELECT phrase_id FROM attempts WHERE level=? ORDER BY id DESC LIMIT 8",(level,))]
-                options = [p for p in LEVEL_PHRASES[level] if p["id"] not in recent] or LEVEL_PHRASES[level]
+                options = [p for p in LIST_PHRASES[level][list_id] if p["id"] not in recent] or LIST_PHRASES[level][list_id]
                 choice = random.choice(options)
-                return self.send_json(200, {"id":choice["id"],"level":level,"category":choice.get("grammar_point",choice["category"]),"glossary":choice["tokens"]})
+                return self.send_json(200, {"id":choice["id"],"level":level,"list_id":list_id,"category":choice.get("grammar_point",choice["category"]),"glossary":choice["tokens"]})
             if path == "/api/cloze/next":
-                level = urllib.parse.parse_qs(urllib.parse.urlsplit(self.path).query).get("level", ["N5"])[0]
+                query = urllib.parse.parse_qs(urllib.parse.urlsplit(self.path).query)
+                level = query.get("level", ["N5"])[0]
                 if level not in LEVEL_PHRASES: return self.send_json(400,{"error":"Nível inválido"})
+                list_id = query.get("list", ["main"])[0]
+                if list_id not in LIST_PHRASES[level]: return self.send_json(400,{"error":"Lista inválida"})
                 with database() as con:
                     recent = [row[0] for row in con.execute("SELECT phrase_id FROM attempts WHERE level=? AND mode='Writing' ORDER BY id DESC LIMIT 8",(level,))]
-                options = [p for p in LEVEL_PHRASES[level] if p["id"] not in recent and len(p["tokens"]) >= 3]
-                choice = random.choice(options or LEVEL_PHRASES[level])
+                options = [p for p in LIST_PHRASES[level][list_id] if p["id"] not in recent and len(p["tokens"]) >= 3]
+                choice = random.choice(options or LIST_PHRASES[level][list_id])
                 blanks = choose_blanks(choice)
                 exercise_id = uuid.uuid4().hex
                 with SESSION_LOCK:
@@ -443,14 +453,17 @@ class Handler(BaseHTTPRequestHandler):
                 for i,word in enumerate(choice["tokens"]):
                     display_parts.append({"index":i,"surface":None if i in blanks else word["surface"],"blank":i in blanks})
                     if i in insertions: display_parts.append({"index":-1,"surface":insertions[i],"blank":False})
-                return self.send_json(200, {"exercise_id":exercise_id,"id":choice["id"],"level":level,"glossary":choice["tokens"],
+                return self.send_json(200, {"exercise_id":exercise_id,"id":choice["id"],"level":level,"list_id":list_id,"glossary":choice["tokens"],
                     "category":choice.get("grammar_point",choice["category"]),"translation_pt":choice["translation_pt"],
                     "punctuation":choice["text"][-1],
                     "parts":display_parts,"choices":cloze_choices(choice,blanks)})
             if path == "/api/voices":
                 return self.send_json(200, {"voices":voices()})
             if path == "/api/metadata":
-                levels = {level:{"phrase_count":len(items),"grammar_topics":len({p.get("grammar_point") for p in items if p.get("grammar_point")})} for level,items in LEVEL_PHRASES.items()}
+                levels = {level:{"phrase_count":len(items),"grammar_topics":len({p.get("grammar_point") for p in items if p.get("grammar_point")}),
+                    "lists":[{"id":list_id,"title":DATA[("N5","N4","N3").index(level)]["title"] if list_id == "main" else VIDEO_N4["title"],
+                              "phrase_count":len(phrases)} for list_id,phrases in LIST_PHRASES[level].items()]}
+                    for level,items in LEVEL_PHRASES.items()}
                 return self.send_json(200,{"phrase_count":len(PHRASES),"levels":levels})
             if path == "/api/review":
                 level = urllib.parse.parse_qs(urllib.parse.urlsplit(self.path).query).get("level", ["N5"])[0]
