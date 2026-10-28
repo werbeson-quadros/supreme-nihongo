@@ -3,6 +3,7 @@
   "source_url": "https://www.youtube.com/watch?v=cy9P8f4lrEw",
   "source_language": "ja",
   "captions": "auto-generated",
+  "user_supplied_count": 15,
   "language": "ja",
   "translation_language": "pt-BR",
   "phrases": [
@@ -80,7 +81,8 @@
         4,
         5
       ],
-      "display_after": []
+      "display_after": [],
+      "source_type": "caption"
     },
     {
       "id": 2502,
@@ -124,7 +126,8 @@
         1,
         2
       ],
-      "display_after": []
+      "display_after": [],
+      "source_type": "caption"
     },
     {
       "id": 2503,
@@ -200,7 +203,8 @@
         4,
         5
       ],
-      "display_after": []
+      "display_after": [],
+      "source_type": "caption"
     },
     {
       "id": 2504,
@@ -275,7 +279,8 @@
         4,
         5
       ],
-      "display_after": []
+      "display_after": [],
+      "source_type": "caption"
     },
     {
       "id": 2505,
@@ -350,7 +355,8 @@
         4,
         5
       ],
-      "display_after": []
+      "display_after": [],
+      "source_type": "caption"
     },
     {
       "id": 2506,
@@ -488,7 +494,8 @@
         10,
         11
       ],
-      "display_after": []
+      "display_after": [],
+      "source_type": "caption"
     },
     {
       "id": 2507,
@@ -583,7 +590,8 @@
         6,
         7
       ],
-      "display_after": []
+      "display_after": [],
+      "source_type": "caption"
     },
     {
       "id": 2508,
@@ -665,7 +673,8 @@
           "reading": "よおじ",
           "kind": "vocabulário N4",
           "meanings_pt": [
-            "compromisso"
+            "compromisso",
+            "assunto a resolver"
           ],
           "note_pt": "Tema desta cena; vocabulário da lista enviada."
         },
@@ -741,7 +750,8 @@
         12,
         13
       ],
-      "display_after": []
+      "display_after": [],
+      "source_type": "caption"
     },
     {
       "id": 2509,
@@ -785,7 +795,8 @@
         1,
         2
       ],
-      "display_after": []
+      "display_after": [],
+      "source_type": "caption"
     },
     {
       "id": 2510,
@@ -954,7 +965,8 @@
         13,
         14
       ],
-      "display_after": []
+      "display_after": [],
+      "source_type": "caption"
     },
     {
       "id": 2511,
@@ -1009,7 +1021,8 @@
         2,
         3
       ],
-      "display_after": []
+      "display_after": [],
+      "source_type": "caption"
     },
     {
       "id": 2512,
@@ -1073,7 +1086,8 @@
         3,
         4
       ],
-      "display_after": []
+      "display_after": [],
+      "source_type": "caption"
     },
     {
       "id": 2513,
@@ -1148,7 +1162,8 @@
         4,
         5
       ],
-      "display_after": []
+      "display_after": [],
+      "source_type": "caption"
     },
     {
       "id": 2514,
@@ -1246,7 +1261,8 @@
         6,
         7
       ],
-      "display_after": []
+      "display_after": [],
+      "source_type": "caption"
     },
     {
       "id": 2515,
@@ -1321,7 +1337,8 @@
         4,
         5
       ],
-      "display_after": []
+      "display_after": [],
+      "source_type": "caption"
     },
     {
       "id": 2516,
@@ -1375,7 +1392,8 @@
         2,
         3
       ],
-      "display_after": []
+      "display_after": [],
+      "source_type": "caption"
     },
     {
       "id": 2517,
@@ -1463,7 +1481,8 @@
         5,
         6
       ],
-      "display_after": []
+      "display_after": [],
+      "source_type": "caption"
     },
     {
       "id": 2518,
@@ -1541,7 +1560,8 @@
         4,
         5
       ],
-      "display_after": []
+      "display_after": [],
+      "source_type": "caption"
     },
     {
       "id": 2519,
@@ -1683,7 +1703,8 @@
         10,
         11
       ],
-      "display_after": []
+      "display_after": [],
+      "source_type": "caption"
     },
     {
       "id": 2520,
@@ -1764,8 +1785,7 @@
           "kind": "estrutura gramatical",
           "meanings_pt": [
             "e",
-            "além disso",
-            "pois"
+            "além disso"
           ],
           "note_pt": "Uso desta palavra ou estrutura no contexto da frase."
         }
@@ -1780,7 +1800,8 @@
         6,
         7
       ],
-      "display_after": []
+      "display_after": [],
+      "source_type": "caption"
     },
     {
       "id": 2521,
@@ -1867,7 +1888,8 @@
         5,
         6
       ],
-      "display_after": []
+      "display_after": [],
+      "source_type": "caption"
     },
     {
       "id": 2522,
@@ -1994,7 +2016,8 @@
         9,
         10
       ],
-      "display_after": []
+      "display_after": [],
+      "source_type": "caption"
     },
     {
       "id": 2523,
@@ -2079,7 +2102,8 @@
         5,
         6
       ],
-      "display_after": []
+      "display_after": [],
+      "source_type": "caption"
     },
     {
       "id": 2524,
@@ -2165,7 +2189,8 @@
         5,
         6
       ],
-      "display_after": []
+      "display_after": [],
+      "source_type": "caption"
     },
     {
       "id": 2525,
@@ -2249,7 +2274,8 @@
         5,
         6
       ],
-      "display_after": []
+      "display_after": [],
+      "source_type": "caption"
     },
     {
       "id": 2526,
@@ -2345,7 +2371,8 @@
         6,
         7
       ],
-      "display_after": []
+      "display_after": [],
+      "source_type": "caption"
     },
     {
       "id": 2527,
@@ -2422,7 +2449,8 @@
         4,
         5
       ],
-      "display_after": []
+      "display_after": [],
+      "source_type": "caption"
     },
     {
       "id": 2528,
@@ -2477,7 +2505,8 @@
         2,
         3
       ],
-      "display_after": []
+      "display_after": [],
+      "source_type": "caption"
     },
     {
       "id": 2529,
@@ -2553,7 +2582,8 @@
         4,
         5
       ],
-      "display_after": []
+      "display_after": [],
+      "source_type": "caption"
     },
     {
       "id": 2530,
@@ -2648,7 +2678,8 @@
         6,
         7
       ],
-      "display_after": []
+      "display_after": [],
+      "source_type": "caption"
     },
     {
       "id": 2531,
@@ -2756,7 +2787,8 @@
         7,
         8
       ],
-      "display_after": []
+      "display_after": [],
+      "source_type": "caption"
     },
     {
       "id": 2532,
@@ -2888,7 +2920,8 @@
           "index": 4,
           "text": "、"
         }
-      ]
+      ],
+      "source_type": "caption"
     },
     {
       "id": 2533,
@@ -3037,7 +3070,8 @@
         11,
         12
       ],
-      "display_after": []
+      "display_after": [],
+      "source_type": "caption"
     },
     {
       "id": 2534,
@@ -3133,7 +3167,8 @@
         6,
         7
       ],
-      "display_after": []
+      "display_after": [],
+      "source_type": "caption"
     },
     {
       "id": 2535,
@@ -3230,7 +3265,8 @@
         6,
         7
       ],
-      "display_after": []
+      "display_after": [],
+      "source_type": "caption"
     },
     {
       "id": 2536,
@@ -3327,7 +3363,8 @@
         6,
         7
       ],
-      "display_after": []
+      "display_after": [],
+      "source_type": "caption"
     },
     {
       "id": 2537,
@@ -3403,7 +3440,8 @@
         4,
         5
       ],
-      "display_after": []
+      "display_after": [],
+      "source_type": "caption"
     },
     {
       "id": 2538,
@@ -3457,7 +3495,8 @@
         2,
         3
       ],
-      "display_after": []
+      "display_after": [],
+      "source_type": "caption"
     },
     {
       "id": 2539,
@@ -3532,7 +3571,8 @@
         4,
         5
       ],
-      "display_after": []
+      "display_after": [],
+      "source_type": "caption"
     },
     {
       "id": 2540,
@@ -3610,7 +3650,1922 @@
         4,
         5
       ],
-      "display_after": []
+      "display_after": [],
+      "source_type": "caption"
+    },
+    {
+      "id": 2541,
+      "level": "N4",
+      "list_id": "youtube:cy9P8f4lrEw",
+      "category": "legenda de vídeo N4",
+      "grammar_point": "legenda de vídeo",
+      "text": "毎回新しい場面をたくさん作るより、同じ変身シーンを使うほうが簡単です。",
+      "translation_pt": "É mais fácil usar a mesma cena de transformação do que criar muitas cenas novas a cada vez.",
+      "tokens": [
+        {
+          "surface": "毎回",
+          "reading": "まいかい",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "toda vez"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "新しい",
+          "reading": "あたらしい",
+          "kind": "adjetivo い",
+          "meanings_pt": [
+            "novo"
+          ],
+          "note_pt": "Modifica substantivo diretamente."
+        },
+        {
+          "surface": "場面",
+          "reading": "ばめん",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "cena"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "を",
+          "reading": "を",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "marca o objeto direto"
+          ],
+          "note_pt": "Significado no contexto desta frase."
+        },
+        {
+          "surface": "たくさん",
+          "reading": "たくさん",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "muito",
+            "muitos"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "作る",
+          "reading": "つくる",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "criar",
+            "fazer"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "より",
+          "reading": "より",
+          "kind": "partícula",
+          "meanings_pt": [
+            "em vez de",
+            "mais que"
+          ],
+          "note_pt": "Marca o padrão de comparação."
+        },
+        {
+          "surface": "同じ",
+          "reading": "おなじ",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "mesmo"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "変身シーン",
+          "reading": "へんしんしいん",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "cena de transformação"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "を",
+          "reading": "を",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "marca o objeto direto"
+          ],
+          "note_pt": "Significado no contexto desta frase."
+        },
+        {
+          "surface": "使う",
+          "reading": "つかう",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "usar"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "ほうが",
+          "reading": "ほおが",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "é melhor",
+            "é mais"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "簡単",
+          "reading": "かんたん",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "simples",
+            "fácil"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "です",
+          "reading": "です",
+          "kind": "cópula polida",
+          "meanings_pt": [
+            "é",
+            "está"
+          ],
+          "note_pt": "Forma polida não passada; a tradução depende do predicado."
+        }
+      ],
+      "focus_token_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "display_after": [
+        {
+          "index": 6,
+          "text": "、"
+        }
+      ],
+      "source_type": "user_supplied"
+    },
+    {
+      "id": 2542,
+      "level": "N4",
+      "list_id": "youtube:cy9P8f4lrEw",
+      "category": "legenda de vídeo N4",
+      "grammar_point": "legenda de vídeo",
+      "text": "子どもたちはヒーローを見ながら、そのおもちゃにも興味を持ちます。",
+      "translation_pt": "Enquanto assistem ao herói, as crianças também se interessam pelos brinquedos dele.",
+      "tokens": [
+        {
+          "surface": "子どもたち",
+          "reading": "こどもたち",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "crianças"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "は",
+          "reading": "は",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "marca o tema"
+          ],
+          "note_pt": "Significado no contexto desta frase."
+        },
+        {
+          "surface": "ヒーロー",
+          "reading": "ひいろお",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "herói"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "を",
+          "reading": "を",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "marca o objeto direto"
+          ],
+          "note_pt": "Significado no contexto desta frase."
+        },
+        {
+          "surface": "見ながら",
+          "reading": "みながら",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "enquanto olha"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "その",
+          "reading": "その",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "esse",
+            "aquele"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "おもちゃ",
+          "reading": "おもちゃ",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "brinquedo"
+          ],
+          "note_pt": "Tema desta cena; vocabulário da lista enviada."
+        },
+        {
+          "surface": "にも",
+          "reading": "にも",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "também em",
+            "também para"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "興味",
+          "reading": "きょおみ",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "interesse"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "を",
+          "reading": "を",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "marca o objeto direto"
+          ],
+          "note_pt": "Significado no contexto desta frase."
+        },
+        {
+          "surface": "持ちます",
+          "reading": "もちます",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "ter",
+            "nutrir"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        }
+      ],
+      "focus_token_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "display_after": [
+        {
+          "index": 4,
+          "text": "、"
+        }
+      ],
+      "source_type": "user_supplied"
+    },
+    {
+      "id": 2543,
+      "level": "N4",
+      "list_id": "youtube:cy9P8f4lrEw",
+      "category": "legenda de vídeo N4",
+      "grammar_point": "legenda de vídeo",
+      "text": "では、なぜ敵はその間に攻撃しないのでしょうか。",
+      "translation_pt": "Então por que o inimigo não ataca nesse intervalo?",
+      "tokens": [
+        {
+          "surface": "では",
+          "reading": "では",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "em",
+            "quanto a"
+          ],
+          "note_pt": "Uso desta palavra ou estrutura no contexto da frase."
+        },
+        {
+          "surface": "なぜ",
+          "reading": "なぜ",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "por que"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "敵",
+          "reading": "てき",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "inimigo"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "は",
+          "reading": "は",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "marca o tema"
+          ],
+          "note_pt": "Significado no contexto desta frase."
+        },
+        {
+          "surface": "その",
+          "reading": "その",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "esse",
+            "aquele"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "間",
+          "reading": "あいだ",
+          "kind": "estrutura gramatical",
+          "meanings_pt": [
+            "enquanto"
+          ],
+          "note_pt": "Uso desta palavra ou estrutura no contexto da frase."
+        },
+        {
+          "surface": "に",
+          "reading": "に",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "a",
+            "para",
+            "marca o destinatário"
+          ],
+          "note_pt": "Significado no contexto desta frase."
+        },
+        {
+          "surface": "攻撃しない",
+          "reading": "こおげきしない",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "não atacar"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "のでしょうか",
+          "reading": "のでしょおか",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "por que será",
+            "será que"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        }
+      ],
+      "focus_token_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "display_after": [
+        {
+          "index": 0,
+          "text": "、"
+        }
+      ],
+      "source_type": "user_supplied"
+    },
+    {
+      "id": 2544,
+      "level": "N4",
+      "list_id": "youtube:cy9P8f4lrEw",
+      "category": "legenda de vídeo N4",
+      "grammar_point": "legenda de vídeo",
+      "text": "これは映画の世界の話ですが、「変身中は強いエネルギーが出ているから、敵は近づくことができない」と考えることもできます。",
+      "translation_pt": "Esta é uma história do mundo do cinema, mas também podemos pensar que, durante a transformação, sai uma energia forte e o inimigo não consegue se aproximar.",
+      "tokens": [
+        {
+          "surface": "これ",
+          "reading": "これ",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "isto"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "は",
+          "reading": "は",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "marca o tema"
+          ],
+          "note_pt": "Significado no contexto desta frase."
+        },
+        {
+          "surface": "映画",
+          "reading": "ええが",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "filme",
+            "cinema"
+          ],
+          "note_pt": "Tema desta cena; vocabulário da lista enviada."
+        },
+        {
+          "surface": "の",
+          "reading": "の",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "de",
+            "liga substantivos"
+          ],
+          "note_pt": "Significado no contexto desta frase."
+        },
+        {
+          "surface": "世界",
+          "reading": "せかい",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "mundo"
+          ],
+          "note_pt": "Tema desta cena; vocabulário da lista enviada."
+        },
+        {
+          "surface": "の",
+          "reading": "の",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "de",
+            "liga substantivos"
+          ],
+          "note_pt": "Significado no contexto desta frase."
+        },
+        {
+          "surface": "話",
+          "reading": "はなし",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "história",
+            "assunto"
+          ],
+          "note_pt": "Significado no contexto desta frase."
+        },
+        {
+          "surface": "ですが",
+          "reading": "ですが",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "mas"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "変身中",
+          "reading": "へんしんちゅう",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "durante a transformação"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "は",
+          "reading": "は",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "marca o tema"
+          ],
+          "note_pt": "Significado no contexto desta frase."
+        },
+        {
+          "surface": "強い",
+          "reading": "つよい",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "forte"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "エネルギー",
+          "reading": "えねるぎい",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "energia"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "が",
+          "reading": "が",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "marca o sujeito",
+            "mas"
+          ],
+          "note_pt": "Significado no contexto desta frase."
+        },
+        {
+          "surface": "出ている",
+          "reading": "でている",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "está saindo",
+            "está sendo emitido"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "から",
+          "reading": "から",
+          "kind": "partícula",
+          "meanings_pt": [
+            "de",
+            "desde",
+            "porque"
+          ],
+          "note_pt": "Marca origem, início ou motivo."
+        },
+        {
+          "surface": "敵",
+          "reading": "てき",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "inimigo"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "は",
+          "reading": "は",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "marca o tema"
+          ],
+          "note_pt": "Significado no contexto desta frase."
+        },
+        {
+          "surface": "近づくことができない",
+          "reading": "ちかずくことができない",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "não consegue se aproximar"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "と",
+          "reading": "と",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "com",
+            "e"
+          ],
+          "note_pt": "Significado no contexto desta frase."
+        },
+        {
+          "surface": "考えることもできます",
+          "reading": "かんがえることもできます",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "também é possível pensar"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        }
+      ],
+      "focus_token_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "display_after": [
+        {
+          "index": 7,
+          "text": "、「"
+        },
+        {
+          "index": 14,
+          "text": "、"
+        },
+        {
+          "index": 17,
+          "text": "」"
+        }
+      ],
+      "source_type": "user_supplied"
+    },
+    {
+      "id": 2545,
+      "level": "N4",
+      "list_id": "youtube:cy9P8f4lrEw",
+      "category": "legenda de vídeo N4",
+      "grammar_point": "legenda de vídeo",
+      "text": "また、敵が「相手が強くなるまで待ってあげよう」と考えているのかもしれません。",
+      "translation_pt": "Talvez o inimigo também esteja pensando em esperar até que o adversário fique forte.",
+      "tokens": [
+        {
+          "surface": "また",
+          "reading": "また",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "de novo"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "敵",
+          "reading": "てき",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "inimigo"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "が",
+          "reading": "が",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "marca o sujeito",
+            "mas"
+          ],
+          "note_pt": "Significado no contexto desta frase."
+        },
+        {
+          "surface": "相手",
+          "reading": "あいて",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "adversário",
+            "outra pessoa"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "が",
+          "reading": "が",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "marca o sujeito",
+            "mas"
+          ],
+          "note_pt": "Significado no contexto desta frase."
+        },
+        {
+          "surface": "強くなる",
+          "reading": "つよくなる",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "ficar forte"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "まで",
+          "reading": "まで",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "até"
+          ],
+          "note_pt": "Significado no contexto desta frase."
+        },
+        {
+          "surface": "待ってあげよう",
+          "reading": "まってあげよお",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "vamos esperar por ele"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "と",
+          "reading": "と",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "com",
+            "e"
+          ],
+          "note_pt": "Significado no contexto desta frase."
+        },
+        {
+          "surface": "考えている",
+          "reading": "かんがえている",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "está pensando"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "のかもしれません",
+          "reading": "のかもしれません",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "talvez seja",
+            "pode ser que"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        }
+      ],
+      "focus_token_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "display_after": [
+        {
+          "index": 0,
+          "text": "、"
+        },
+        {
+          "index": 2,
+          "text": "「"
+        },
+        {
+          "index": 7,
+          "text": "」"
+        }
+      ],
+      "source_type": "user_supplied"
+    },
+    {
+      "id": 2546,
+      "level": "N4",
+      "list_id": "youtube:cy9P8f4lrEw",
+      "category": "legenda de vídeo N4",
+      "grammar_point": "legenda de vídeo",
+      "text": "つまり、長い変身シーンには、作品を作る側の理由と、物語の中の楽しい理由があるのです。",
+      "translation_pt": "Em resumo, as cenas longas de transformação têm razões de quem produz a obra e razões divertidas dentro da história.",
+      "tokens": [
+        {
+          "surface": "つまり",
+          "reading": "つまり",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "em resumo",
+            "isto é"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "長い",
+          "reading": "ながい",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "longo"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "変身シーン",
+          "reading": "へんしんしいん",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "cena de transformação"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "には",
+          "reading": "には",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "em",
+            "para"
+          ],
+          "note_pt": "Uso desta palavra ou estrutura no contexto da frase."
+        },
+        {
+          "surface": "作品",
+          "reading": "さくひん",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "obra"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "を",
+          "reading": "を",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "marca o objeto direto"
+          ],
+          "note_pt": "Significado no contexto desta frase."
+        },
+        {
+          "surface": "作る",
+          "reading": "つくる",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "criar",
+            "fazer"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "側",
+          "reading": "がわ",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "lado",
+            "parte"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "の",
+          "reading": "の",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "de",
+            "liga substantivos"
+          ],
+          "note_pt": "Significado no contexto desta frase."
+        },
+        {
+          "surface": "理由",
+          "reading": "りゆう",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "razão",
+            "motivo"
+          ],
+          "note_pt": "Tema desta cena; vocabulário da lista enviada."
+        },
+        {
+          "surface": "と",
+          "reading": "と",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "com",
+            "e"
+          ],
+          "note_pt": "Significado no contexto desta frase."
+        },
+        {
+          "surface": "物語",
+          "reading": "ものがたり",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "história",
+            "narrativa"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "の",
+          "reading": "の",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "de",
+            "liga substantivos"
+          ],
+          "note_pt": "Significado no contexto desta frase."
+        },
+        {
+          "surface": "中",
+          "reading": "なか",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "interior"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "の",
+          "reading": "の",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "de",
+            "liga substantivos"
+          ],
+          "note_pt": "Significado no contexto desta frase."
+        },
+        {
+          "surface": "楽しい",
+          "reading": "たのしい",
+          "kind": "adjetivo い",
+          "meanings_pt": [
+            "divertido"
+          ],
+          "note_pt": "Experiência prazerosa."
+        },
+        {
+          "surface": "理由",
+          "reading": "りゆう",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "razão",
+            "motivo"
+          ],
+          "note_pt": "Tema desta cena; vocabulário da lista enviada."
+        },
+        {
+          "surface": "が",
+          "reading": "が",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "marca o sujeito",
+            "mas"
+          ],
+          "note_pt": "Significado no contexto desta frase."
+        },
+        {
+          "surface": "ある",
+          "reading": "ある",
+          "kind": "verbo",
+          "meanings_pt": [
+            "existir",
+            "haver"
+          ],
+          "note_pt": "Existência de objeto ou evento; forma informal."
+        },
+        {
+          "surface": "のです",
+          "reading": "のです",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "é que",
+            "explicação"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        }
+      ],
+      "focus_token_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "display_after": [
+        {
+          "index": 0,
+          "text": "、"
+        },
+        {
+          "index": 3,
+          "text": "、"
+        },
+        {
+          "index": 10,
+          "text": "、"
+        }
+      ],
+      "source_type": "user_supplied"
+    },
+    {
+      "id": 2547,
+      "level": "N4",
+      "list_id": "youtube:cy9P8f4lrEw",
+      "category": "legenda de vídeo N4",
+      "grammar_point": "legenda de vídeo",
+      "text": "本当？じゃあ先に新しい本のシールを貼ってて。",
+      "translation_pt": "Sério? Então vá colando primeiro os adesivos nos livros novos.",
+      "tokens": [
+        {
+          "surface": "本当",
+          "reading": "ほんとお",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "sério",
+            "verdade"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "じゃあ",
+          "reading": "じゃあ",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "então"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "先に",
+          "reading": "さきに",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "primeiro",
+            "antes"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "新しい",
+          "reading": "あたらしい",
+          "kind": "adjetivo い",
+          "meanings_pt": [
+            "novo"
+          ],
+          "note_pt": "Modifica substantivo diretamente."
+        },
+        {
+          "surface": "本",
+          "reading": "ほん",
+          "kind": "substantivo",
+          "meanings_pt": [
+            "livro",
+            "origem"
+          ],
+          "note_pt": "Nesta lista, normalmente 'livro'."
+        },
+        {
+          "surface": "の",
+          "reading": "の",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "de",
+            "liga substantivos"
+          ],
+          "note_pt": "Significado no contexto desta frase."
+        },
+        {
+          "surface": "シール",
+          "reading": "しいる",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "adesivo",
+            "etiqueta"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "を",
+          "reading": "を",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "marca o objeto direto"
+          ],
+          "note_pt": "Significado no contexto desta frase."
+        },
+        {
+          "surface": "貼ってて",
+          "reading": "はってて",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "vá colando",
+            "continue colando"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        }
+      ],
+      "focus_token_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "display_after": [
+        {
+          "index": 0,
+          "text": "？"
+        }
+      ],
+      "source_type": "user_supplied"
+    },
+    {
+      "id": 2548,
+      "level": "N4",
+      "list_id": "youtube:cy9P8f4lrEw",
+      "category": "legenda de vídeo N4",
+      "grammar_point": "legenda de vídeo",
+      "text": "タオルは私が事務室から持ってくるから。",
+      "translation_pt": "Eu vou trazer as toalhas da secretaria.",
+      "tokens": [
+        {
+          "surface": "タオル",
+          "reading": "たおる",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "toalha"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "は",
+          "reading": "は",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "marca o tema"
+          ],
+          "note_pt": "Significado no contexto desta frase."
+        },
+        {
+          "surface": "私",
+          "reading": "わたし",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "eu"
+          ],
+          "note_pt": "Significado no contexto desta frase."
+        },
+        {
+          "surface": "が",
+          "reading": "が",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "marca o sujeito",
+            "mas"
+          ],
+          "note_pt": "Significado no contexto desta frase."
+        },
+        {
+          "surface": "事務室",
+          "reading": "じむしつ",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "secretaria",
+            "escritório"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "から",
+          "reading": "から",
+          "kind": "partícula",
+          "meanings_pt": [
+            "de",
+            "desde",
+            "porque"
+          ],
+          "note_pt": "Marca origem, início ou motivo."
+        },
+        {
+          "surface": "持ってくる",
+          "reading": "もってくる",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "trará"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "から",
+          "reading": "から",
+          "kind": "partícula",
+          "meanings_pt": [
+            "de",
+            "desde",
+            "porque"
+          ],
+          "note_pt": "Marca origem, início ou motivo."
+        }
+      ],
+      "focus_token_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "display_after": [],
+      "source_type": "user_supplied"
+    },
+    {
+      "id": 2549,
+      "level": "N4",
+      "list_id": "youtube:cy9P8f4lrEw",
+      "category": "legenda de vídeo N4",
+      "grammar_point": "legenda de vídeo",
+      "text": "あ、そういえば床に落ちている本を拾ってくれた。",
+      "translation_pt": "Ah, falando nisso, você recolheu para mim os livros que estavam caídos no chão.",
+      "tokens": [
+        {
+          "surface": "あ",
+          "reading": "あ",
+          "kind": "interjeição",
+          "meanings_pt": [
+            "ah"
+          ],
+          "note_pt": "Interjeição usada para iniciar a fala."
+        },
+        {
+          "surface": "そういえば",
+          "reading": "そおいえば",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "falando nisso"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "床",
+          "reading": "ゆか",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "chão"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "に",
+          "reading": "に",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "a",
+            "para",
+            "marca o destinatário"
+          ],
+          "note_pt": "Significado no contexto desta frase."
+        },
+        {
+          "surface": "落ちている",
+          "reading": "おちている",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "está caído"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "本",
+          "reading": "ほん",
+          "kind": "substantivo",
+          "meanings_pt": [
+            "livro",
+            "origem"
+          ],
+          "note_pt": "Nesta lista, normalmente 'livro'."
+        },
+        {
+          "surface": "を",
+          "reading": "を",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "marca o objeto direto"
+          ],
+          "note_pt": "Significado no contexto desta frase."
+        },
+        {
+          "surface": "拾ってくれた",
+          "reading": "ひろってくれた",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "pegou para mim",
+            "recolheu"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        }
+      ],
+      "focus_token_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "display_after": [
+        {
+          "index": 0,
+          "text": "、"
+        }
+      ],
+      "source_type": "user_supplied"
+    },
+    {
+      "id": 2550,
+      "level": "N4",
+      "list_id": "youtube:cy9P8f4lrEw",
+      "category": "legenda de vídeo N4",
+      "grammar_point": "legenda de vídeo",
+      "text": "花もいいけど、病院によっては花を持ち込めないところもあるらしいよ。",
+      "translation_pt": "Flores são boas, mas parece que alguns hospitais não permitem levá-las.",
+      "tokens": [
+        {
+          "surface": "花",
+          "reading": "はな",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "flor",
+            "flores"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "も",
+          "reading": "も",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "também"
+          ],
+          "note_pt": "Significado no contexto desta frase."
+        },
+        {
+          "surface": "いい",
+          "reading": "いい",
+          "kind": "adjetivo い",
+          "meanings_pt": [
+            "bom",
+            "boa"
+          ],
+          "note_pt": "Forma cotidiana de よい."
+        },
+        {
+          "surface": "けど",
+          "reading": "けど",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "mas",
+            "embora"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "病院",
+          "reading": "びょおいん",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "hospital"
+          ],
+          "note_pt": "Tema desta cena; vocabulário da lista enviada."
+        },
+        {
+          "surface": "によっては",
+          "reading": "によってわ",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "dependendo de",
+            "em alguns casos"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "花",
+          "reading": "はな",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "flor",
+            "flores"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "を",
+          "reading": "を",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "marca o objeto direto"
+          ],
+          "note_pt": "Significado no contexto desta frase."
+        },
+        {
+          "surface": "持ち込めない",
+          "reading": "もちこめない",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "não pode levar para dentro"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "ところ",
+          "reading": "ところ",
+          "kind": "estrutura gramatical",
+          "meanings_pt": [
+            "lugar",
+            "local"
+          ],
+          "note_pt": "Uso desta palavra ou estrutura no contexto da frase."
+        },
+        {
+          "surface": "も",
+          "reading": "も",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "também"
+          ],
+          "note_pt": "Significado no contexto desta frase."
+        },
+        {
+          "surface": "ある",
+          "reading": "ある",
+          "kind": "verbo",
+          "meanings_pt": [
+            "existir",
+            "haver"
+          ],
+          "note_pt": "Existência de objeto ou evento; forma informal."
+        },
+        {
+          "surface": "らしい",
+          "reading": "らしい",
+          "kind": "estrutura gramatical",
+          "meanings_pt": [
+            "parece que"
+          ],
+          "note_pt": "Uso desta palavra ou estrutura no contexto da frase."
+        },
+        {
+          "surface": "よ",
+          "reading": "よ",
+          "kind": "partícula final",
+          "meanings_pt": [
+            "viu",
+            "ênfase na fala"
+          ],
+          "note_pt": "Partícula final da fala."
+        }
+      ],
+      "focus_token_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "display_after": [
+        {
+          "index": 3,
+          "text": "、"
+        }
+      ],
+      "source_type": "user_supplied"
+    },
+    {
+      "id": 2551,
+      "level": "N4",
+      "list_id": "youtube:cy9P8f4lrEw",
+      "category": "legenda de vídeo N4",
+      "grammar_point": "legenda de vídeo",
+      "text": "入院中暇な時間も多いだろうし。",
+      "translation_pt": "Durante a internação, provavelmente haverá bastante tempo livre.",
+      "tokens": [
+        {
+          "surface": "入院中",
+          "reading": "にゅういんちゅう",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "durante a internação"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "暇な",
+          "reading": "ひまな",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "livre",
+            "desocupado"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "時間",
+          "reading": "じかん",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "tempo",
+            "horas"
+          ],
+          "note_pt": "Uso desta palavra ou estrutura no contexto da frase."
+        },
+        {
+          "surface": "も",
+          "reading": "も",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "também"
+          ],
+          "note_pt": "Significado no contexto desta frase."
+        },
+        {
+          "surface": "多い",
+          "reading": "おおい",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "muito",
+            "numerosos"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "だろう",
+          "reading": "だろお",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "provavelmente",
+            "deve ser"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "し",
+          "reading": "し",
+          "kind": "estrutura gramatical",
+          "meanings_pt": [
+            "e",
+            "além disso"
+          ],
+          "note_pt": "Uso desta palavra ou estrutura no contexto da frase."
+        }
+      ],
+      "focus_token_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "display_after": [],
+      "source_type": "user_supplied"
+    },
+    {
+      "id": 2552,
+      "level": "N4",
+      "list_id": "youtube:cy9P8f4lrEw",
+      "category": "legenda de vídeo N4",
+      "grammar_point": "legenda de vídeo",
+      "text": "それが今回は行けそうにないの。",
+      "translation_pt": "Só que desta vez parece que não vou conseguir ir.",
+      "tokens": [
+        {
+          "surface": "それが",
+          "reading": "それが",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "mas",
+            "só que"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "今回",
+          "reading": "こんかい",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "desta vez"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "は",
+          "reading": "は",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "marca o tema"
+          ],
+          "note_pt": "Significado no contexto desta frase."
+        },
+        {
+          "surface": "行けそうにない",
+          "reading": "いけそおにない",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "parece não poder ir"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "の",
+          "reading": "の",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "de",
+            "liga substantivos"
+          ],
+          "note_pt": "Significado no contexto desta frase."
+        }
+      ],
+      "focus_token_indices": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "display_after": [],
+      "source_type": "user_supplied"
+    },
+    {
+      "id": 2553,
+      "level": "N4",
+      "list_id": "youtube:cy9P8f4lrEw",
+      "category": "legenda de vídeo N4",
+      "grammar_point": "legenda de vídeo",
+      "text": "体の調子が悪いのですか。",
+      "translation_pt": "Você está se sentindo mal?",
+      "tokens": [
+        {
+          "surface": "体",
+          "reading": "からだ",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "corpo"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "の",
+          "reading": "の",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "de",
+            "liga substantivos"
+          ],
+          "note_pt": "Significado no contexto desta frase."
+        },
+        {
+          "surface": "調子",
+          "reading": "ちょおし",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "condição",
+            "estado"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "が",
+          "reading": "が",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "marca o sujeito",
+            "mas"
+          ],
+          "note_pt": "Significado no contexto desta frase."
+        },
+        {
+          "surface": "悪い",
+          "reading": "わるい",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "ruim"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "のですか",
+          "reading": "のですか",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "é que?",
+            "pergunta explicativa"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        }
+      ],
+      "focus_token_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "display_after": [],
+      "source_type": "user_supplied"
+    },
+    {
+      "id": 2554,
+      "level": "N4",
+      "list_id": "youtube:cy9P8f4lrEw",
+      "category": "legenda de vídeo N4",
+      "grammar_point": "legenda de vídeo",
+      "text": "洗濯機の蓋を開けておかなければいけませんか。",
+      "translation_pt": "É preciso deixar a tampa da máquina de lavar aberta?",
+      "tokens": [
+        {
+          "surface": "洗濯機",
+          "reading": "せんたくき",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "máquina de lavar"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "の",
+          "reading": "の",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "de",
+            "liga substantivos"
+          ],
+          "note_pt": "Significado no contexto desta frase."
+        },
+        {
+          "surface": "蓋",
+          "reading": "ふた",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "tampa"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "を",
+          "reading": "を",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "marca o objeto direto"
+          ],
+          "note_pt": "Significado no contexto desta frase."
+        },
+        {
+          "surface": "開けておかなければいけませんか",
+          "reading": "あけておかなければいけませんか",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "é necessário deixar aberto?"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        }
+      ],
+      "focus_token_indices": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "display_after": [],
+      "source_type": "user_supplied"
+    },
+    {
+      "id": 2555,
+      "level": "N4",
+      "list_id": "youtube:cy9P8f4lrEw",
+      "category": "legenda de vídeo N4",
+      "grammar_point": "legenda de vídeo",
+      "text": "用事があって来られないって言っていたよね。",
+      "translation_pt": "Você disse que não podia vir porque tinha um compromisso, não foi?",
+      "tokens": [
+        {
+          "surface": "用事",
+          "reading": "よおじ",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "compromisso",
+            "assunto a resolver"
+          ],
+          "note_pt": "Tema desta cena; vocabulário da lista enviada."
+        },
+        {
+          "surface": "が",
+          "reading": "が",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "marca o sujeito",
+            "mas"
+          ],
+          "note_pt": "Significado no contexto desta frase."
+        },
+        {
+          "surface": "あって",
+          "reading": "あって",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "havendo"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "来られない",
+          "reading": "こられない",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "não pode vir"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "って",
+          "reading": "って",
+          "kind": "estrutura gramatical",
+          "meanings_pt": [
+            "disse que"
+          ],
+          "note_pt": "Uso desta palavra ou estrutura no contexto da frase."
+        },
+        {
+          "surface": "言っていた",
+          "reading": "いっていた",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "estava dizendo"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        },
+        {
+          "surface": "よね",
+          "reading": "よね",
+          "kind": "vocabulário N4",
+          "meanings_pt": [
+            "não é?"
+          ],
+          "note_pt": "Trecho da legenda japonesa."
+        }
+      ],
+      "focus_token_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "display_after": [],
+      "source_type": "user_supplied"
     }
   ]
 }

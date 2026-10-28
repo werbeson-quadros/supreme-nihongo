@@ -63,6 +63,31 @@ ROWS = [
     ("今日はいい天気ですよ。", "Hoje o tempo está bom.", "今日 は いい 天気 です よ"),
 ]
 
+# Additional sentences supplied by the user for this video list. Four exact
+# duplicates of ROWS are retained here so the normal duplicate check skips them.
+# Obvious transcription slips are corrected for Japanese study.
+USER_ROWS = [
+    ("毎回新しい場面をたくさん作るより、同じ変身シーンを使うほうが簡単です。", "É mais fácil usar a mesma cena de transformação do que criar muitas cenas novas a cada vez.", "毎回 新しい 場面 を たくさん 作る より 同じ 変身シーン を 使う ほうが 簡単 です"),
+    ("子どもたちはヒーローを見ながら、そのおもちゃにも興味を持ちます。", "Enquanto assistem ao herói, as crianças também se interessam pelos brinquedos dele.", "子どもたち は ヒーロー を 見ながら その おもちゃ にも 興味 を 持ちます"),
+    ("では、なぜ敵はその間に攻撃しないのでしょうか。", "Então por que o inimigo não ataca nesse intervalo?", "では なぜ 敵 は その 間 に 攻撃しない のでしょうか"),
+    ("これは映画の世界の話ですが、「変身中は強いエネルギーが出ているから、敵は近づくことができない」と考えることもできます。", "Esta é uma história do mundo do cinema, mas também podemos pensar que, durante a transformação, sai uma energia forte e o inimigo não consegue se aproximar.", "これ は 映画 の 世界 の 話 ですが 変身中 は 強い エネルギー が 出ている から 敵 は 近づくことができない と 考えることもできます"),
+    ("また、敵が「相手が強くなるまで待ってあげよう」と考えているのかもしれません。", "Talvez o inimigo também esteja pensando em esperar até que o adversário fique forte.", "また 敵 が 相手 が 強くなる まで 待ってあげよう と 考えている のかもしれません"),
+    ("つまり、長い変身シーンには、作品を作る側の理由と、物語の中の楽しい理由があるのです。", "Em resumo, as cenas longas de transformação têm razões de quem produz a obra e razões divertidas dentro da história.", "つまり 長い 変身シーン には 作品 を 作る 側 の 理由 と 物語 の 中 の 楽しい 理由 が ある のです"),
+    ("今週土日は予定が入ってしまったんです。", "Já surgiu um compromisso neste fim de semana.", "今週 土日 は 予定 が 入ってしまったんです"),
+    ("バスならまだ動いてるらしいよ。", "Parece que os ônibus ainda estão funcionando.", "バス なら まだ 動いてる らしい よ"),
+    ("本当？じゃあ先に新しい本のシールを貼ってて。", "Sério? Então vá colando primeiro os adesivos nos livros novos.", "本当 じゃあ 先に 新しい 本 の シール を 貼ってて"),
+    ("タオルは私が事務室から持ってくるから。", "Eu vou trazer as toalhas da secretaria.", "タオル は 私 が 事務室 から 持ってくる から"),
+    ("あ、そういえば床に落ちている本を拾ってくれた。", "Ah, falando nisso, você recolheu para mim os livros que estavam caídos no chão.", "あ そういえば 床 に 落ちている 本 を 拾ってくれた"),
+    ("花もいいけど、病院によっては花を持ち込めないところもあるらしいよ。", "Flores são boas, mas parece que alguns hospitais não permitem levá-las.", "花 も いい けど 病院 によっては 花 を 持ち込めない ところ も ある らしい よ"),
+    ("入院中暇な時間も多いだろうし。", "Durante a internação, provavelmente haverá bastante tempo livre.", "入院中 暇な 時間 も 多い だろう し"),
+    ("でも僕は本より体にいいものを持っていきたいんだ。", "Mas eu quero levar algo saudável em vez de um livro.", "でも 僕 は 本 より 体 に いい もの を 持っていきたい んだ"),
+    ("それが今回は行けそうにないの。", "Só que desta vez parece que não vou conseguir ir.", "それが 今回 は 行けそうにない の"),
+    ("体の調子が悪いのですか。", "Você está se sentindo mal?", "体 の 調子 が 悪い のですか"),
+    ("実は母が来週こちらに来ることになって空港まで迎えに行かないといけないのよ。", "Na verdade, minha mãe virá para cá na semana que vem, e preciso buscá-la no aeroporto.", "実は 母 が 来週 こちら に 来ることになって 空港 まで 迎えに行かないといけない のよ"),
+    ("洗濯機の蓋を開けておかなければいけませんか。", "É preciso deixar a tampa da máquina de lavar aberta?", "洗濯機 の 蓋 を 開けておかなければいけませんか"),
+    ("用事があって来られないって言っていたよね。", "Você disse que não podia vir porque tinha um compromisso, não foi?", "用事 が あって 来られない って 言っていた よね"),
+]
+
 EXTRA_MEANINGS = {
     "問題用紙":"folha da prova", "メモ":"anotação", "取っても":"mesmo fazendo", "構いません":"não há problema",
     "問題1":"questão 1", "では":"em; quanto a", "まず":"primeiro", "今週":"esta semana", "土日":"sábado e domingo",
@@ -100,6 +125,27 @@ EXTRA_MEANINGS = {
     "大学":"universidade", "日本":"Japão", "だから":"por isso; porque",
 }
 
+EXTRA_MEANINGS.update({
+    "新しい":"novo", "場面":"cena", "たくさん":"muito; muitos", "作る":"criar; fazer", "変身シーン":"cena de transformação",
+    "使う":"usar", "ほうが":"é melhor; é mais", "簡単":"simples; fácil", "子どもたち":"crianças", "ヒーロー":"herói",
+    "その":"esse; aquele", "おもちゃ":"brinquedo", "にも":"também em; também para", "興味":"interesse", "持ちます":"ter; nutrir",
+    "なぜ":"por que", "敵":"inimigo", "攻撃しない":"não atacar", "のでしょうか":"por que será; será que", "これ":"isto",
+    "映画":"filme; cinema", "世界":"mundo", "話":"história; assunto", "ですが":"mas", "変身中":"durante a transformação",
+    "強い":"forte", "エネルギー":"energia", "出ている":"está saindo; está sendo emitido", "近づくことができない":"não consegue se aproximar",
+    "考えることもできます":"também é possível pensar", "相手":"adversário; outra pessoa", "強くなる":"ficar forte",
+    "待ってあげよう":"vamos esperar por ele", "考えている":"está pensando", "のかもしれません":"talvez seja; pode ser que",
+    "つまり":"em resumo; isto é", "長い":"longo", "には":"em; para", "作品":"obra", "側":"lado; parte",
+    "理由":"razão; motivo", "物語":"história; narrativa", "楽しい":"divertido", "ある":"existir; haver", "のです":"é que; explicação",
+    "本当":"sério; verdade", "先に":"primeiro; antes", "シール":"adesivo; etiqueta", "貼ってて":"vá colando; continue colando",
+    "タオル":"toalha", "私":"eu", "事務室":"secretaria; escritório", "あ":"ah", "そういえば":"falando nisso",
+    "床":"chão", "落ちている":"está caído", "拾ってくれた":"pegou para mim; recolheu", "花":"flor; flores",
+    "けど":"mas; embora", "病院":"hospital", "によっては":"dependendo de; em alguns casos", "持ち込めない":"não pode levar para dentro",
+    "ところ":"lugar; local", "入院中":"durante a internação", "暇な":"livre; desocupado", "時間":"tempo; horas",
+    "多い":"muito; numerosos", "だろう":"provavelmente; deve ser", "し":"e; além disso", "それが":"mas; só que",
+    "今回":"desta vez", "行けそうにない":"parece não poder ir", "調子":"condição; estado", "のですか":"é que?; pergunta explicativa",
+    "開けておかなければいけませんか":"é necessário deixar aberto?", "用事":"compromisso; assunto a resolver",
+})
+
 
 def caption_sentences():
     if not TRANSCRIPT.exists():
@@ -125,13 +171,15 @@ def make():
     source = caption_sentences()
     existing = {p["text"] for p in json.loads((ROOT / "Lista e Frases N4.json").read_text(encoding="utf-8"))["phrases"]}
     lexicon = {t["surface"]:t for p in json.loads((ROOT / "Lista e Frases N4.json").read_text(encoding="utf-8"))["phrases"] for t in p["tokens"]}
+    if OUTPUT.exists():
+        lexicon.update({t["surface"]:t for p in json.loads(OUTPUT.read_text(encoding="utf-8"))["phrases"] for t in p["tokens"]})
     phrases = []
     cache = {}
-    for text,translation,split in ROWS:
-        if text not in source or len(text) <= 10 or text in existing:
+    for text,translation,split in ROWS + USER_ROWS:
+        if (text not in source and (text,translation,split) in ROWS) or len(text) <= 10 or text in existing:
             continue
         surfaces = split.split()
-        if "".join(surfaces) != text[:-1].replace("、", ""):
+        if "".join(surfaces) != text[:-1].replace("、", "").replace("「", "").replace("」", "").replace("？", ""):
             raise ValueError(f"Tokens do not reconstruct {text}")
         tokens = []
         for surface in surfaces:
@@ -156,15 +204,17 @@ def make():
         phrases.append({"id":2501+len(phrases),"level":"N4","list_id":f"youtube:{VIDEO_ID}",
                         "category":"legenda de vídeo N4","grammar_point":"legenda de vídeo",
                         "text":text,"translation_pt":translation,"tokens":tokens,
-                        "focus_token_indices":list(range(len(tokens))),"display_after":insertions})
+                        "focus_token_indices":list(range(len(tokens))),"display_after":insertions,
+                        "source_type":"caption" if (text,translation,split) in ROWS else "user_supplied"})
         existing.add(text)
     if len(phrases) < 30:
         raise ValueError(f"Only {len(phrases)} suitable sentences found")
     return {"title":TITLE,"source_url":SOURCE,"source_language":"ja","captions":"auto-generated",
+            "user_supplied_count":sum(p["source_type"] == "user_supplied" for p in phrases),
             "language":"ja","translation_language":"pt-BR","phrases":phrases}
 
 
 if __name__ == "__main__":
     data = make()
     OUTPUT.write_text(json.dumps(data,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
-    print(f"Wrote {len(data['phrases'])} caption sentences to {OUTPUT.name}")
+    print(f"Wrote {len(data['phrases'])} video-list sentences to {OUTPUT.name}")

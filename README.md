@@ -15,7 +15,7 @@ The installer automatically selects CUDA when it detects an NVIDIA GPU, or the C
 
 ## Features
 
-- 520 annotated N5 sentences, 1,200 original N4 sentences, 40 curated N4 video-caption sentences, and 300 short N3 sentences, with full Portuguese translations.
+- 520 annotated N5 sentences, 1,200 original N4 sentences, 55 sentences in the N4 video list, and 300 short N3 sentences, with full Portuguese translations.
 - A sentence-list selector within N4 separates the original corpus from the video-caption list.
 - Listening transcription and Japanese sentence completion exercises.
 - Multiple VOICEVOX voices, play/pause, playback speed from 0.5× to 2×, and an optional 0.5-second pause after each identified particle.
