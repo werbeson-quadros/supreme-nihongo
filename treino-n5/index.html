@@ -20,7 +20,7 @@
       <div class="content-grid">
         <section class="exercise card">
           <div class="card-top"><span id="levelPill" class="pill">NÍVEL N5</span><span id="category" class="category">Preparando frase…</span></div>
-          <div class="exercise-heading"><span class="exercise-number">01 <small id="phraseCountMain">/ …</small></span><span class="separator"></span><span id="exerciseTitle">Ouça a frase</span></div>
+          <div class="exercise-heading"><span class="exercise-number">01 <small id="phraseCountMain">/ …</small></span><span class="separator"></span><span id="exerciseTitle">Ouça a frase</span><span id="shownCount" class="shown-count" aria-live="polite">Exibida 0 vezes</span></div>
           <div class="voice-control"><label for="voiceSelect">Voz de reprodução</label><select id="voiceSelect" aria-label="Voz de reprodução"><option value="2">Carregando vozes…</option></select></div>
           <div id="playerPrompt" class="player-prompt" hidden>Ouça a frase em japonês</div>
           <div class="player" id="playerBlock">
@@ -69,7 +69,7 @@
       <div class="review-header"><div><span class="review-eyebrow">REVISÃO POR NÍVEL</span><h2 id="reviewTitle">Revisão N5</h2><p id="reviewCount">Carregando cartões…</p></div><button id="closeReview" class="close" type="button" aria-label="Fechar revisão">×</button></div>
       <div id="reviewCard" class="review-card" hidden><div id="reviewFlip" class="review-flip"><button id="reviewFront" class="review-face review-front" type="button" aria-label="Virar cartão"><span>TOQUE PARA VIRAR</span><strong id="reviewFrontText" lang="ja"></strong><small id="reviewSource"></small></button><div id="reviewBack" class="review-face review-back" inert><span>RESPOSTA</span><strong id="reviewBackText" lang="ja"></strong><div id="reviewReading" class="review-reading" lang="ja"></div><p id="reviewMeaning"></p><label for="reviewNote">Sua nota</label><textarea id="reviewNote" rows="2" maxlength="2000" placeholder="Escreva uma dica para lembrar…"></textarea><button id="reviewAudio" class="review-audio" type="button">▶ Ouvir a 0,85×</button></div></div></div>
       <div id="reviewEmpty" class="review-empty" hidden>Nenhum cartão para revisar neste nível. Salve um trecho da frase ou continue praticando.</div>
-      <div class="review-actions"><label class="review-auto"><input id="reviewAuto" type="checkbox"> Automático · 2 s por lado</label><div><button id="reviewRemove" class="review-remove" type="button">Remover da lista</button><button id="reviewNext" class="submit" type="button">Próximo <span>→</span></button></div></div>
+      <div class="review-actions"><label class="review-auto"><input id="reviewAuto" type="checkbox"> Automático · 3 s por lado</label><div><button id="reviewHard" class="review-remove" type="button">Não sei −1</button><button id="reviewEasy" class="submit" type="button">Fácil +1</button></div></div>
     </div>
   </dialog>
   <div id="selectionTooltip" class="selection-tooltip" role="tooltip" hidden></div>

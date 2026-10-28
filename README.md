@@ -20,8 +20,9 @@ The installer automatically selects CUDA when it detects an NVIDIA GPU, or the C
 - Listening transcription and Japanese sentence completion exercises.
 - Multiple VOICEVOX voices, play/pause, playback speed from 0.5× to 2×, and an optional 0.5-second pause after each identified particle.
 - On-demand reading of selected Japanese text with a meaning tooltip and a save-for-review button.
-- Separate listening and writing scores for words and grammar, stored in a local SQLite database.
-- Level-specific review flashcards for the 20 most missed terms and saved words, excerpts, or sentences. Cards have readings, translations, personal notes, 0.85× audio, and a two-seconds-per-side automatic mode.
+- Separate listening and writing scores for words and grammar, plus per-mode sentence exposure counts stored in a local SQLite database. Unseen and less frequently shown sentences are selected first.
+- Level-specific review flashcards for the 20 lowest scoring terms and saved unscored words, excerpts, or sentences. Easy and I don't know adjust persistent points, which influence random review frequency. Cards have readings, translations, personal notes, 0.85× audio, and a three-seconds-per-side automatic mode.
+- The answer dialog explains the meaning and formation of grammar structures found in the current sentence.
 - Dark theme and a review ranking.
 
 The sentence data lives in `treino-n5/Lista e Frases N5.json`, `treino-n5/Lista e Frases N4.json`, `treino-n5/Lista e Frases N4 - YouTube cy9P8f4lrEw.json`, and `treino-n5/Lista e Frases N3.json`. See [app documentation](treino-n5/README.md) and [voice setup](voicevox/README.md) for details.

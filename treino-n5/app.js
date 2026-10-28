@@ -207,6 +207,7 @@ async function loadPhrase() {
   $('#replays').textContent = '0 reproduções';
   $('#answer').value = '';
   $('#category').textContent = 'Preparando frase…';
+  $('#shownCount').textContent = 'Exibida 0 vezes';
   $('#play').disabled = true;
   try {
     const level = state.level;
@@ -217,6 +218,7 @@ async function loadPhrase() {
     state.exerciseId = phrase.exercise_id || null;
     state.glossary = phrase.glossary || [];
     $('#category').textContent = phrase.category;
+    $('#shownCount').textContent = `Exibida ${phrase.shown_count} ${phrase.shown_count === 1 ? 'vez' : 'vezes'} neste modo`;
     const number = listId === 'youtube:cy9P8f4lrEw' ? phrase.id - 2500 : level === 'N3' ? phrase.id - 2200 : level === 'N4' ? phrase.id - 1000 : phrase.id;
     $('.exercise-number').innerHTML = `${String(number).padStart(2,'0')} <small>/ ${state.phraseCount || '…'}</small>`;
     if (mode === 'Writing') renderCloze(phrase);
@@ -358,9 +360,22 @@ function showResult(data) {
   $('#correctText').textContent = data.phrase.text;
   $('#translation').textContent = data.phrase.translation_pt;
   const grammarNote = $('#grammarNote');
-  grammarNote.hidden = !data.phrase.grammar_point;
-  grammarNote.textContent = data.phrase.grammar_point
-    ? [data.phrase.grammar_point,data.phrase.grammar_explanation_pt].filter(Boolean).join(' · ') : '';
+  const grammarDetails = data.grammar_details || [];
+  grammarNote.hidden = !grammarDetails.length;
+  grammarNote.replaceChildren();
+  if (grammarDetails.length) {
+    const heading = document.createElement('strong');
+    heading.textContent = `Gramática aplicada · ${grammarDetails.length} ${grammarDetails.length === 1 ? 'estrutura' : 'estruturas'}`;
+    grammarNote.append(heading);
+    for (const item of grammarDetails) {
+      const section = document.createElement('section');
+      const title = document.createElement('b'); title.textContent = item.title;
+      const meaning = document.createElement('p'); meaning.textContent = item.meaning_pt;
+      const formation = document.createElement('p'); formation.textContent = `Formação: ${item.formation_pt}`;
+      section.append(title,meaning,formation);
+      grammarNote.append(section);
+    }
+  }
   $('#analysisTitle').textContent = writing ? 'Análise das lacunas' : 'Análise por trecho';
   const box = $('#tokenResults'); box.replaceChildren();
   for (const token of data.results) {
@@ -413,7 +428,7 @@ $('#nextPhrase').addEventListener('click',() => { dialog.close(); loadPhrase(); 
 const reviewDialog = $('#reviewDialog');
 const reviewClip = new Audio();
 reviewClip.playbackRate = 0.85;
-const reviewState = {level:null,cards:[],index:0,flipped:false,timer:null,noteTimer:null,dirty:false,generation:0};
+const reviewState = {level:null,cards:[],index:0,flipped:false,timer:null,noteTimer:null,dirty:false,generation:0,busy:false};
 
 function stopReviewTimer() {
   clearTimeout(reviewState.timer);
@@ -421,6 +436,20 @@ function stopReviewTimer() {
 }
 
 function currentReviewCard() { return reviewState.cards[reviewState.index]; }
+
+function chooseReviewIndex(previousKey = null) {
+  const cards = reviewState.cards;
+  if (!cards.length) return 0;
+  const candidates = cards.length > 1 ? cards.filter(card => card.key !== previousKey) : cards;
+  const minimum = Math.min(...candidates.map(card => card.points));
+  const weights = candidates.map(card => 1 / (1 + Math.max(0,card.points - minimum)));
+  let draw = Math.random() * weights.reduce((sum,weight) => sum + weight,0);
+  for (let i = 0; i < candidates.length; i++) {
+    draw -= weights[i];
+    if (draw < 0) return cards.indexOf(candidates[i]);
+  }
+  return cards.indexOf(candidates[candidates.length - 1]);
+}
 
 async function persistReviewNote() {
   clearTimeout(reviewState.noteTimer);
@@ -445,9 +474,9 @@ function renderReviewCard() {
   $('#reviewTitle').textContent = `Revisão ${reviewState.level}`;
   $('#reviewCard').hidden = !card;
   $('#reviewEmpty').hidden = !!card;
-  $('#reviewRemove').disabled = !card;
-  $('#reviewNext').disabled = !card;
-  $('#reviewCount').textContent = card ? `${reviewState.index + 1} de ${reviewState.cards.length} cartões` : 'Nenhum cartão disponível';
+  $('#reviewHard').disabled = !card || reviewState.busy;
+  $('#reviewEasy').disabled = !card || reviewState.busy;
+  $('#reviewCount').textContent = card ? `${reviewState.cards.length} cartões na revisão · ${card.points} ${Math.abs(card.points) === 1 ? 'ponto' : 'pontos'}` : 'Nenhum cartão disponível';
   if (!card) return;
   reviewState.flipped = false;
   reviewState.dirty = false;
@@ -459,7 +488,7 @@ function renderReviewCard() {
   $('#reviewReading').textContent = card.reading;
   $('#reviewMeaning').textContent = card.meaning;
   $('#reviewNote').value = card.note || '';
-  $('#reviewSource').textContent = card.source.includes('mistakes') ? `${card.errors} erros neste nível` : 'Salvo para revisão';
+  $('#reviewSource').textContent = card.source.includes('practice') ? `${card.errors} erros neste nível` : 'Salvo para revisão';
   if ($('#reviewAuto').checked) scheduleReviewFlip();
 }
 
@@ -485,7 +514,7 @@ function flipReviewCard() {
     const generation = reviewState.generation;
     reviewState.timer = setTimeout(() => {
       if (generation === reviewState.generation) advanceReviewCard();
-    },2000);
+    },3000);
   }
 }
 
@@ -495,7 +524,7 @@ function scheduleReviewFlip() {
   const generation = reviewState.generation;
   reviewState.timer = setTimeout(() => {
     if (generation === reviewState.generation) flipReviewCard();
-  },2000);
+  },3000);
 }
 
 async function advanceReviewCard() {
@@ -503,8 +532,32 @@ async function advanceReviewCard() {
   try { await persistReviewNote(); }
   catch (error) { $('#reviewAuto').checked = false; alert(error.message); return; }
   if (!reviewState.cards.length) return;
-  reviewState.index = (reviewState.index + 1) % reviewState.cards.length;
+  const previousKey = currentReviewCard()?.key;
+  reviewState.index = chooseReviewIndex(previousKey);
   renderReviewCard();
+}
+
+async function rateReviewCard(rating) {
+  const card = currentReviewCard();
+  if (!card || reviewState.busy) return;
+  stopReviewTimer();
+  reviewState.busy = true;
+  $('#reviewHard').disabled = true;
+  $('#reviewEasy').disabled = true;
+  try {
+    await persistReviewNote();
+    const result = await api('/api/review/rate',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({level:reviewState.level,key:card.key,rating})});
+    reviewState.cards = result.cards;
+    reviewState.index = chooseReviewIndex(card.key);
+    reviewState.busy = false;
+    renderReviewCard();
+  } catch (error) {
+    reviewState.busy = false;
+    $('#reviewAuto').checked = false;
+    renderReviewCard();
+    alert(error.message);
+  }
 }
 
 $('#openReview').addEventListener('click',async () => {
@@ -514,7 +567,7 @@ $('#openReview').addEventListener('click',async () => {
   try {
     const data = await api(`/api/review?level=${reviewState.level}`);
     reviewState.cards = data.cards;
-    reviewState.index = 0;
+    reviewState.index = chooseReviewIndex();
     $('#reviewAuto').checked = false;
     reviewDialog.showModal();
     renderReviewCard();
@@ -531,7 +584,8 @@ reviewDialog.addEventListener('close',() => {
 });
 $('#reviewFront').addEventListener('click',flipReviewCard);
 $('#reviewAudio').addEventListener('click',playReviewAudio);
-$('#reviewNext').addEventListener('click',advanceReviewCard);
+$('#reviewEasy').addEventListener('click',() => rateReviewCard('easy'));
+$('#reviewHard').addEventListener('click',() => rateReviewCard('hard'));
 $('#reviewAuto').addEventListener('change',event => {
   stopReviewTimer();
   if (!event.target.checked) return;
@@ -539,7 +593,7 @@ $('#reviewAuto').addEventListener('change',event => {
     const generation = reviewState.generation;
     reviewState.timer = setTimeout(() => {
       if (generation === reviewState.generation) advanceReviewCard();
-    },2000);
+    },3000);
   } else scheduleReviewFlip();
 });
 $('#reviewNote').addEventListener('input',() => {
@@ -547,22 +601,6 @@ $('#reviewNote').addEventListener('input',() => {
   clearTimeout(reviewState.noteTimer);
   reviewState.noteTimer = setTimeout(() => persistReviewNote().catch(error => alert(error.message)),700);
 });
-$('#reviewRemove').addEventListener('click',async () => {
-  const card = currentReviewCard();
-  if (!card) return;
-  stopReviewTimer();
-  $('#reviewRemove').disabled = true;
-  try {
-    await api('/api/review/remove',{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({level:reviewState.level,key:card.key})});
-    clearTimeout(reviewState.noteTimer);
-    reviewState.dirty = false;
-    reviewState.cards.splice(reviewState.index,1);
-    if (reviewState.index >= reviewState.cards.length) reviewState.index = 0;
-    renderReviewCard();
-  } catch (error) { alert(error.message); $('#reviewRemove').disabled = false; }
-});
-
 const selectionReader = {key:'',text:'',timer:null,checkTimer:null,generation:0,saved:false};
 const selectionAudio = new Audio();
 const japaneseCharacters = /[\u3040-\u30ff\u3400-\u9fff]/;

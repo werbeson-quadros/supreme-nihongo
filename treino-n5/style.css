@@ -32,6 +32,13 @@ html[data-theme="dark"] .choice-word:hover,html[data-theme="dark"] .choice-word:
 .progress .divider{display:none}.progress h3{margin-top:22px}
 .grammar-note{margin-top:12px;padding:12px 15px;border-radius:10px;background:#edf6ed;color:#35684b;font-size:12px;line-height:1.55}
 .grammar-note[hidden]{display:none}
+.grammar-note>strong{display:block;font-size:12px;margin-bottom:8px}
+.grammar-note section{padding:9px 0;border-top:1px solid #cce6d0}
+.grammar-note section b{font:700 14px 'Noto Sans JP',sans-serif}
+.grammar-note section p{margin:5px 0 0;line-height:1.6}
+.grammar-note section p:last-child{color:#557362}
+.shown-count{margin-left:auto;font-size:11px;font-weight:700;color:#64826b;background:#edf6ed;border-radius:20px;padding:6px 9px;white-space:nowrap}
+@media(max-width:600px){.exercise-heading{flex-wrap:wrap}.shown-count{margin-left:0}}
 @media(max-width:700px){.mode-tabs{margin-top:0}.mode-tab{flex:1;padding:11px 8px}.voice-control{align-items:flex-start;flex-direction:column}.voice-control select{max-width:100%;width:100%}.objective{font-size:18px}.blank-input{width:90px}}
 
 /* Layout without the left navigation; compact review ranking on the right. */
@@ -75,6 +82,9 @@ html[data-theme="dark"] .card,html[data-theme="dark"] dialog{background:#1d2a23;
 html[data-theme="dark"] .mode-tab,html[data-theme="dark"] .theme-toggle,html[data-theme="dark"] .voice-control select,html[data-theme="dark"] textarea,html[data-theme="dark"] .secondary{background:#23352b;border-color:#45604b;color:#dbeede}
 html[data-theme="dark"] .mode-tab.active{background:#408660;border-color:#408660;color:#fff}
 html[data-theme="dark"] .pill,html[data-theme="dark"] .result-badge,html[data-theme="dark"] .grammar-note{background:#2b4833;color:#a8e0b7}
+html[data-theme="dark"] .grammar-note section{border-color:#496750}
+html[data-theme="dark"] .grammar-note section p:last-child{color:#b6d3be}
+html[data-theme="dark"] .shown-count{background:#2b4833;color:#a8e0b7}
 html[data-theme="dark"] .exercise-number,html[data-theme="dark"] .eyebrow,html[data-theme="dark"] .rail-eyebrow span,html[data-theme="dark"] .mode-scores b{color:#8dd1a4}
 html[data-theme="dark"] .separator,html[data-theme="dark"] .rail-summary,html[data-theme="dark"] .mode-scores,html[data-theme="dark"] .weak-item{border-color:#34483d}
 html[data-theme="dark"] .separator{background:#34483d}

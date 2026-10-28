@@ -16,6 +16,7 @@ import uuid
 import wave
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
+from grammar_guide import grammar_details
 
 ROOT = Path(__file__).resolve().parent
 DATA = [json.loads((ROOT / f"Lista e Frases {level}.json").read_text(encoding="utf-8")) for level in ("N5", "N4", "N3")]
@@ -60,6 +61,15 @@ def database():
       level TEXT NOT NULL, item_key TEXT NOT NULL,
       PRIMARY KEY(level, item_key)
     );
+    CREATE TABLE IF NOT EXISTS review_scores (
+      level TEXT NOT NULL, item_key TEXT NOT NULL, points INTEGER NOT NULL DEFAULT 0,
+      PRIMARY KEY(level, item_key)
+    );
+    CREATE TABLE IF NOT EXISTS phrase_impressions (
+      level TEXT NOT NULL, mode TEXT NOT NULL, phrase_id INTEGER NOT NULL,
+      shown_count INTEGER NOT NULL DEFAULT 0, last_seen TEXT,
+      PRIMARY KEY(level, mode, phrase_id)
+    );
     """)
     attempt_columns = {row[1] for row in con.execute("PRAGMA table_info(attempts)")}
     token_columns = {row[1] for row in con.execute("PRAGMA table_info(token_results)")}
@@ -69,6 +79,10 @@ def database():
         con.execute("ALTER TABLE attempts ADD COLUMN level TEXT NOT NULL DEFAULT 'N5'")
     if "weight" not in token_columns:
         con.execute("ALTER TABLE token_results ADD COLUMN weight REAL NOT NULL DEFAULT 1.0")
+    if not con.execute("SELECT 1 FROM phrase_impressions LIMIT 1").fetchone():
+        con.execute("""INSERT INTO phrase_impressions(level,mode,phrase_id,shown_count,last_seen)
+            SELECT level,mode,phrase_id,COUNT(*),MAX(created_at) FROM attempts
+            GROUP BY level,mode,phrase_id""")
     con.commit()
     return con
 
@@ -113,44 +127,60 @@ def selected_review_item(phrase, selected):
 
 
 def review_cards(level):
-    """Return the 20 hardest active tokens plus saved words and sentences."""
+    """Return the 20 lowest scoring items plus explicitly saved unscored items."""
     with database() as con:
-        excluded = {row[0] for row in con.execute(
-            "SELECT item_key FROM review_removed WHERE level=?", (level,))}
+        excluded = {row[0] for row in con.execute("SELECT item_key FROM review_removed WHERE level=?", (level,))}
         ranked = con.execute("""SELECT tr.surface,tr.reading,tr.kind,
-            COUNT(*)-SUM(tr.correct) AS errors,COUNT(*) AS attempts
+            COUNT(*)-SUM(tr.correct) AS errors,COUNT(*) AS attempts,
+            SUM(CASE WHEN tr.correct=1 THEN 1 ELSE -1 END) AS practice_points
             FROM token_results tr JOIN attempts a ON a.id=tr.attempt_id
-            WHERE a.level=? GROUP BY tr.surface,tr.reading,tr.kind
-            HAVING errors>0 ORDER BY errors DESC,
-            1.0*SUM(tr.correct)/COUNT(*) ASC,attempts DESC""", (level,)).fetchall()
+            WHERE a.level=? GROUP BY tr.surface,tr.reading,tr.kind""", (level,)).fetchall()
         saved = con.execute("""SELECT item_key,kind,text,reading,meaning,note
             FROM review_saved WHERE level=? ORDER BY rowid DESC""", (level,)).fetchall()
+        ratings = dict(con.execute("SELECT item_key,points FROM review_scores WHERE level=?", (level,)))
     glossary = {(t["surface"],t["reading"]): t for p in LEVEL_PHRASES[level] for t in p["tokens"]}
-    cards = []
-    seen = set()
-    for surface,reading,kind,errors,attempts in ranked:
+    cards_by_key = {}
+    for surface,reading,kind,errors,attempts,practice_points in ranked:
         key = review_key("word",surface)
-        if key in excluded or key in seen: continue
+        if key in excluded: continue
         token = glossary.get((surface,reading))
-        cards.append({"key":key,"kind":"word","text":surface,"reading":reading,
+        card = {"key":key,"kind":"word","text":surface,"reading":reading,
             "meaning":" · ".join(token["meanings_pt"]) if token else kind,
-            "note":"","source":"mistakes","errors":errors,"attempts":attempts})
-        seen.add(key)
-        if len(cards) == 20: break
-    saved_cards = []
+            "note":"","source":"practice","errors":errors,"attempts":attempts,
+            "points":practice_points + ratings.get(key,0)}
+        previous = cards_by_key.get(key)
+        if previous is None or card["points"] < previous["points"]:
+            cards_by_key[key] = card
     for key,kind,surface,reading,meaning,note in saved:
         if key in excluded: continue
-        card = {"key":key,"kind":kind,"text":surface,"reading":reading,
-                "meaning":meaning,"note":note,"source":"saved"}
-        if key in seen:
-            for existing in cards:
-                if existing["key"] == key:
-                    existing.update({"note":note,"meaning":meaning,"source":"mistakes + saved"})
-                    break
+        if key in cards_by_key:
+            cards_by_key[key].update({"note":note,"meaning":meaning,"source":"practice + saved"})
         else:
-            saved_cards.append(card)
-            seen.add(key)
-    return cards + saved_cards
+            cards_by_key[key] = {"key":key,"kind":kind,"text":surface,"reading":reading,
+                "meaning":meaning,"note":note,"source":"saved","errors":0,"attempts":0,
+                "points":ratings.get(key,0),"unscored":key not in ratings}
+    ranked_cards = sorted(cards_by_key.values(), key=lambda card:(card["points"],-card["errors"],card["text"]))
+    selected = ranked_cards[:20]
+    seen = {card["key"] for card in selected}
+    selected.extend(card for card in ranked_cards[20:] if card.get("unscored") and card["key"] not in seen)
+    return selected
+
+
+def next_phrase(level, mode, list_id):
+    """Randomly select among the least displayed sentences in this mode."""
+    options = [phrase for phrase in LIST_PHRASES[level][list_id]
+               if mode != "Writing" or len(phrase["tokens"]) >= 3]
+    with LOCK, database() as con:
+        counts = dict(con.execute("SELECT phrase_id,shown_count FROM phrase_impressions WHERE level=? AND mode=?", (level,mode)))
+        least = min(counts.get(phrase["id"],0) for phrase in options)
+        candidates = [phrase for phrase in options if counts.get(phrase["id"],0) == least]
+        choice = random.choice(candidates)
+        count = least + 1
+        con.execute("""INSERT INTO phrase_impressions(level,mode,phrase_id,shown_count,last_seen)
+            VALUES(?,?,?,?,CURRENT_TIMESTAMP) ON CONFLICT(level,mode,phrase_id) DO UPDATE SET
+            shown_count=excluded.shown_count,last_seen=CURRENT_TIMESTAMP""",
+            (level,mode,choice["id"],count))
+    return choice,count
 
 
 def distance(a, b):
@@ -427,21 +457,16 @@ class Handler(BaseHTTPRequestHandler):
                 if level not in LEVEL_PHRASES: return self.send_json(400,{"error":"Nível inválido"})
                 list_id = query.get("list", ["main"])[0]
                 if list_id not in LIST_PHRASES[level]: return self.send_json(400,{"error":"Lista inválida"})
-                with database() as con:
-                    recent = [row[0] for row in con.execute("SELECT phrase_id FROM attempts WHERE level=? ORDER BY id DESC LIMIT 8",(level,))]
-                options = [p for p in LIST_PHRASES[level][list_id] if p["id"] not in recent] or LIST_PHRASES[level][list_id]
-                choice = random.choice(options)
-                return self.send_json(200, {"id":choice["id"],"level":level,"list_id":list_id,"category":choice.get("grammar_point",choice["category"]),"glossary":choice["tokens"]})
+                choice,shown_count = next_phrase(level,"Listening",list_id)
+                return self.send_json(200, {"id":choice["id"],"level":level,"list_id":list_id,"shown_count":shown_count,
+                    "category":choice.get("grammar_point",choice["category"]),"glossary":choice["tokens"]})
             if path == "/api/cloze/next":
                 query = urllib.parse.parse_qs(urllib.parse.urlsplit(self.path).query)
                 level = query.get("level", ["N5"])[0]
                 if level not in LEVEL_PHRASES: return self.send_json(400,{"error":"Nível inválido"})
                 list_id = query.get("list", ["main"])[0]
                 if list_id not in LIST_PHRASES[level]: return self.send_json(400,{"error":"Lista inválida"})
-                with database() as con:
-                    recent = [row[0] for row in con.execute("SELECT phrase_id FROM attempts WHERE level=? AND mode='Writing' ORDER BY id DESC LIMIT 8",(level,))]
-                options = [p for p in LIST_PHRASES[level][list_id] if p["id"] not in recent and len(p["tokens"]) >= 3]
-                choice = random.choice(options or LIST_PHRASES[level][list_id])
+                choice,shown_count = next_phrase(level,"Writing",list_id)
                 blanks = choose_blanks(choice)
                 exercise_id = uuid.uuid4().hex
                 with SESSION_LOCK:
@@ -453,7 +478,7 @@ class Handler(BaseHTTPRequestHandler):
                 for i,word in enumerate(choice["tokens"]):
                     display_parts.append({"index":i,"surface":None if i in blanks else word["surface"],"blank":i in blanks})
                     if i in insertions: display_parts.append({"index":-1,"surface":insertions[i],"blank":False})
-                return self.send_json(200, {"exercise_id":exercise_id,"id":choice["id"],"level":level,"list_id":list_id,"glossary":choice["tokens"],
+                return self.send_json(200, {"exercise_id":exercise_id,"id":choice["id"],"level":level,"list_id":list_id,"shown_count":shown_count,"glossary":choice["tokens"],
                     "category":choice.get("grammar_point",choice["category"]),"translation_pt":choice["translation_pt"],
                     "punctuation":choice["text"][-1],
                     "parts":display_parts,"choices":cloze_choices(choice,blanks)})
@@ -522,7 +547,7 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         try:
-            if self.path not in ("/api/submit", "/api/cloze/submit", "/api/review/save", "/api/review/note", "/api/review/remove"):
+            if self.path not in ("/api/submit", "/api/cloze/submit", "/api/review/save", "/api/review/note", "/api/review/remove", "/api/review/rate"):
                 return self.send_json(404,{"error":"Rota não encontrada"})
             length = int(self.headers.get("Content-Length","0"))
             if length > 8192: return self.send_json(413,{"error":"Resposta muito longa"})
@@ -549,6 +574,17 @@ class Handler(BaseHTTPRequestHandler):
                     return self.send_json(400,{"error":"Cartão inválido"})
                 card = next((c for c in review_cards(level) if c["key"] == key),None)
                 if card is None: return self.send_json(404,{"error":"Cartão não encontrado"})
+                if self.path == "/api/review/rate":
+                    rating = body.get("rating")
+                    if rating not in ("easy","hard"):
+                        return self.send_json(400,{"error":"Avaliação inválida"})
+                    delta = 1 if rating == "easy" else -1
+                    with database() as con:
+                        con.execute("""INSERT INTO review_scores(level,item_key,points) VALUES(?,?,?)
+                            ON CONFLICT(level,item_key) DO UPDATE SET points=points+excluded.points""",
+                            (level,key,delta))
+                        points = con.execute("SELECT points FROM review_scores WHERE level=? AND item_key=?", (level,key)).fetchone()[0]
+                    return self.send_json(200,{"points":points,"cards":review_cards(level)})
                 if self.path == "/api/review/remove":
                     with database() as con:
                         con.execute("INSERT OR IGNORE INTO review_removed(level,item_key) VALUES(?,?)",(level,key))
@@ -584,14 +620,16 @@ class Handler(BaseHTTPRequestHandler):
                 submitted = json.dumps(answers,ensure_ascii=False)
                 attempt_id, correct = save_attempt(phrase,submitted,results,"Writing")
                 return self.send_json(200,{"mode":"Writing","phrase":phrase,"results":results,
-                    "correct":correct,"total":len(results),"attempt_id":attempt_id})
+                    "correct":correct,"total":len(results),"attempt_id":attempt_id,
+                    "grammar_details":grammar_details(phrase)})
             phrase = PHRASES.get(int(body.get("id",0)))
             submitted = str(body.get("text",""))
             if phrase is None or not norm(submitted): return self.send_json(400,{"error":"Informe uma frase válida"})
             results = evaluate(phrase,submitted)
             attempt_id, correct = save_attempt(phrase,submitted,results,"Listening")
             self.send_json(200,{"mode":"Listening","phrase":phrase,"submitted":submitted,
-                "results":results,"correct":correct,"total":len(results),"attempt_id":attempt_id})
+                "results":results,"correct":correct,"total":len(results),"attempt_id":attempt_id,
+                "grammar_details":grammar_details(phrase)})
         except Exception as exc:
             self.send_json(500,{"error":str(exc)})
 
