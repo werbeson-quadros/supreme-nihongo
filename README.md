@@ -21,7 +21,7 @@ The installer automatically selects CUDA when it detects an NVIDIA GPU, or the C
 - Multiple VOICEVOX voices, play/pause, playback speed from 0.5× to 2×, and an optional 0.5-second pause after each identified particle.
 - On-demand reading of selected Japanese text with a meaning tooltip and a save-for-review button.
 - Separate listening and writing scores for words and grammar, plus per-mode sentence exposure counts stored in a local SQLite database. Unseen and less frequently shown sentences are selected first.
-- Level-specific review flashcards for the 20 lowest scoring terms and saved unscored words, excerpts, or sentences. Easy and I don't know adjust persistent points, which influence random review frequency. Cards have readings, translations, personal notes, 0.85× audio, and a three-seconds-per-side automatic mode.
+- Level-specific review flashcards for the 20 lowest scoring terms and saved unscored words, excerpts, or sentences. Easy and I don't know adjust persistent points. Zero-point cards have the highest random review priority, followed by negative scores and then positive scores. Cards have readings, translations, personal notes, 0.85× audio, and a three-seconds-per-side automatic mode.
 - The answer dialog explains the meaning and formation of grammar structures found in the current sentence.
 - Dark theme and a review ranking.
 

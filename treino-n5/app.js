@@ -437,18 +437,22 @@ function stopReviewTimer() {
 
 function currentReviewCard() { return reviewState.cards[reviewState.index]; }
 
-function chooseReviewIndex(previousKey = null) {
+function reviewCardWeight(points) {
+  if (points === 0) return 10;
+  if (points < 0) return 5 + 4 * (-points) / (4 - points);
+  return 2 / (1 + points);
+}
+
+function chooseReviewIndex() {
   const cards = reviewState.cards;
   if (!cards.length) return 0;
-  const candidates = cards.length > 1 ? cards.filter(card => card.key !== previousKey) : cards;
-  const minimum = Math.min(...candidates.map(card => card.points));
-  const weights = candidates.map(card => 1 / (1 + Math.max(0,card.points - minimum)));
+  const weights = cards.map(card => reviewCardWeight(card.points));
   let draw = Math.random() * weights.reduce((sum,weight) => sum + weight,0);
-  for (let i = 0; i < candidates.length; i++) {
+  for (let i = 0; i < cards.length; i++) {
     draw -= weights[i];
-    if (draw < 0) return cards.indexOf(candidates[i]);
+    if (draw < 0) return i;
   }
-  return cards.indexOf(candidates[candidates.length - 1]);
+  return cards.length - 1;
 }
 
 async function persistReviewNote() {
@@ -532,8 +536,7 @@ async function advanceReviewCard() {
   try { await persistReviewNote(); }
   catch (error) { $('#reviewAuto').checked = false; alert(error.message); return; }
   if (!reviewState.cards.length) return;
-  const previousKey = currentReviewCard()?.key;
-  reviewState.index = chooseReviewIndex(previousKey);
+  reviewState.index = chooseReviewIndex();
   renderReviewCard();
 }
 
@@ -549,7 +552,7 @@ async function rateReviewCard(rating) {
     const result = await api('/api/review/rate',{method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({level:reviewState.level,key:card.key,rating})});
     reviewState.cards = result.cards;
-    reviewState.index = chooseReviewIndex(card.key);
+    reviewState.index = chooseReviewIndex();
     reviewState.busy = false;
     renderReviewCard();
   } catch (error) {
